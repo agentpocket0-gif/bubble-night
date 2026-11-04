@@ -9,8 +9,8 @@
   "learningTags": [
     "direct-aim"
   ],
-  "revision": 2,
-  "authorNotes": "Authored candidate; difficulty and teaching intent await replay and human review.",
+  "revision": 3,
+  "authorNotes": "Expanded opening boards for a fuller first-play experience; solver certification and balance are regenerated in CI.",
   "variants": {
     "easy": {
       "seedHex": "de0798c2e2b49078",
