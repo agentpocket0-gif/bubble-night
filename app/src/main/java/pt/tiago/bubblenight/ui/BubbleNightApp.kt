@@ -74,20 +74,20 @@ import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
 private object NightPalette {
-    val background = Color(0xFF1A1B26)
-    val surface = Color(0xFF24283B)
-    val raised = Color(0xFF292E42)
-    val text = Color(0xFFC0CAF5)
-    val strong = Color(0xFFE2E8FF)
-    val muted = Color(0xFF8C94BE)
-    val accent = Color(0xFF7AA2F7)
-    val purple = Color(0xFFBB9AF7)
-    val green = Color(0xFF9ECE6A)
-    val orange = Color(0xFFFF9E64)
-    val pink = Color(0xFFF7768E)
-    val cyan = Color(0xFF7DCFFF)
-    val line = Color(0xFF414868)
-    val onAccent = Color(0xFF16161E)
+    val background = Color(0xFF080B18)
+    val surface = Color(0xFF121A30)
+    val raised = Color(0xFF1B2742)
+    val text = Color(0xFFC9D8F2)
+    val strong = Color(0xFFF5F7FF)
+    val muted = Color(0xFF8191B5)
+    val accent = Color(0xFF62D8F5)
+    val purple = Color(0xFFB18CFF)
+    val green = Color(0xFF76E0B5)
+    val orange = Color(0xFFFFC46B)
+    val pink = Color(0xFFFF79B7)
+    val cyan = Color(0xFF5CE1E6)
+    val line = Color(0xFF344365)
+    val onAccent = Color(0xFF071321)
 }
 
 private val FigTree = FontFamily(Font(R.font.figtree))
@@ -163,9 +163,36 @@ private fun NightBackdrop(modifier: Modifier = Modifier, orbitNumber: Int = 1) {
     Canvas(modifier) {
         val w = size.width
         val h = size.height
+        drawRect(
+            androidx.compose.ui.graphics.Brush.verticalGradient(
+                listOf(Color(0xFF070A16), Color(0xFF111832), Color(0xFF090D1D)),
+                startY = 0f,
+                endY = h,
+            ),
+            size = size,
+        )
+        drawCircle(
+            androidx.compose.ui.graphics.Brush.radialGradient(
+                listOf(Color(0x443E77C9), Color(0x223D3B83), Color.Transparent),
+                center = Offset(w * .14f, h * .22f),
+                radius = w * .82f,
+            ),
+            radius = w * .82f,
+            center = Offset(w * .14f, h * .22f),
+        )
+        drawCircle(
+            androidx.compose.ui.graphics.Brush.radialGradient(
+                listOf(Color(0x334B2D83), Color.Transparent),
+                center = Offset(w * .92f, h * .58f),
+                radius = w * .72f,
+            ),
+            radius = w * .72f,
+            center = Offset(w * .92f, h * .58f),
+        )
         val randomStars = listOf(
             .08f to .08f, .81f to .12f, .93f to .28f, .15f to .32f, .74f to .43f,
             .06f to .58f, .88f to .66f, .31f to .72f, .95f to .84f, .12f to .9f,
+            .42f to .18f, .58f to .32f, .27f to .48f, .69f to .61f, .51f to .88f,
         )
         randomStars.forEachIndexed { index, (x, y) ->
             val radius = if (index % 3 == 0) 1.8f else 1.1f
@@ -197,7 +224,12 @@ private fun StartPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier
             shape = RoundedCornerShape(22.dp), color = NightPalette.surface.copy(alpha = .94f),
             border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line.copy(alpha = .8f)),
         ) {
-            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(
+                Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(
+                    Color(0xCC1B2C4D), Color(0xBB121B35), Color(0xBB282044),
+                ))).padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 Text(stringResource(R.string.home_campaign), style = LabelStyle.copy(color = NightPalette.purple, letterSpacing = 2.sp))
                 Row(verticalAlignment = Alignment.Bottom) {
                     Column(Modifier.weight(1f)) {
@@ -249,8 +281,17 @@ private fun MiniPlanet(modifier: Modifier = Modifier) {
     Canvas(modifier) {
         val center = Offset(size.width * .5f, size.height * .5f)
         drawOval(NightPalette.purple.copy(alpha = .6f), topLeft = Offset(size.width * .05f, size.height * .37f), size = Size(size.width * .9f, size.height * .3f), style = Stroke(width = 1.1.dp.toPx()))
-        drawCircle(Color(0xFF303653), size.minDimension * .29f, center)
-        drawCircle(NightPalette.accent.copy(alpha = .22f), size.minDimension * .29f, center, style = Stroke(width = 1.dp.toPx()))
+        drawCircle(
+            androidx.compose.ui.graphics.Brush.radialGradient(
+                listOf(Color(0xFF7ADDF4), Color(0xFF344E8D), Color(0xFF171C3A)),
+                center = Offset(center.x - size.minDimension * .1f, center.y - size.minDimension * .12f),
+                radius = size.minDimension * .43f,
+            ),
+            size.minDimension * .29f,
+            center,
+        )
+        drawCircle(NightPalette.accent.copy(alpha = .5f), size.minDimension * .29f, center, style = Stroke(width = 1.2.dp.toPx()))
+        drawCircle(Color.White.copy(alpha = .32f), size.minDimension * .055f, Offset(center.x - size.minDimension * .12f, center.y - size.minDimension * .13f))
         drawCircle(NightPalette.pink, size.minDimension * .035f, Offset(size.width * .91f, size.height * .44f))
         drawCircle(NightPalette.accent, size.minDimension * .035f, Offset(size.width * .13f, size.height * .59f))
         drawCircle(NightPalette.text.copy(alpha = .28f), size.minDimension * .3f, center, style = Stroke(width = 1.dp.toPx()))
@@ -284,8 +325,21 @@ private fun NodeDot(node: UiLevelNode, size: androidx.compose.ui.unit.Dp) {
         UiLevelNode.NodeState.LOCKED -> Triple(NightPalette.raised, NightPalette.line, NightPalette.muted)
         UiLevelNode.NodeState.COMPLETED -> Triple(NightPalette.surface, NightPalette.purple, NightPalette.text)
     }
-    Box(Modifier.size(size).clip(CircleShape).background(fill).border(1.5.dp, stroke, CircleShape), contentAlignment = Alignment.Center) {
-        Text(node.number.toString(), style = TextStyle(fontFamily = FigTree, fontWeight = FontWeight.SemiBold, color = text, fontSize = if (size < 38.dp) 12.sp else 14.sp))
+    Box(
+        Modifier.size(size).clip(CircleShape)
+            .background(androidx.compose.ui.graphics.Brush.radialGradient(listOf(
+                Color.White.copy(alpha = if (node.state == UiLevelNode.NodeState.CURRENT) .5f else .2f),
+                fill,
+                NightPalette.background,
+            )))
+            .border(1.5.dp, stroke.copy(alpha = .92f), CircleShape),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            Modifier.align(Alignment.TopCenter).padding(top = 5.dp).size(if (size < 38.dp) 5.dp else 7.dp)
+                .clip(CircleShape).background(Color.White.copy(alpha = .58f)),
+        )
+        Text(node.number.toString(), style = TextStyle(fontFamily = FigTree, fontWeight = FontWeight.Bold, color = text, fontSize = if (size < 38.dp) 12.sp else 14.sp))
     }
 }
 
@@ -293,27 +347,48 @@ private fun NodeDot(node: UiLevelNode, size: androidx.compose.ui.unit.Dp) {
 private fun MenuRow(title: String, subtitle: String, glyph: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.heightIn(min = 78.dp).clickable(role = Role.Button, onClick = onClick),
-        shape = RoundedCornerShape(18.dp), color = NightPalette.surface.copy(alpha = .96f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line.copy(alpha = .78f)),
+        shape = RoundedCornerShape(18.dp), color = NightPalette.surface.copy(alpha = .78f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line.copy(alpha = .9f)),
     ) {
-        Row(Modifier.padding(horizontal = 14.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(glyph, color = NightPalette.purple, fontSize = 25.sp)
+        Row(
+            Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(
+                Color(0xCC1A2948), Color(0xAA141D37), Color(0xAA241C43),
+            ))).padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Box(Modifier.size(42.dp).clip(CircleShape)
+                .background(androidx.compose.ui.graphics.Brush.radialGradient(listOf(NightPalette.purple.copy(alpha=.45f), NightPalette.raised))),
+                contentAlignment = Alignment.Center) {
+                Text(glyph, color = NightPalette.cyan, fontSize = 23.sp)
+            }
             Column(Modifier.weight(1f)) {
                 Text(title, style = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.SemiBold, color = NightPalette.strong, fontSize = 16.sp, lineHeight = 20.sp))
                 Text(subtitle, style = LabelStyle, maxLines = 2)
             }
-            Text("›", color = NightPalette.muted, fontSize = 26.sp)
+            Text("›", color = NightPalette.cyan, fontSize = 26.sp)
         }
     }
 }
 
 @Composable
 private fun PrimaryButton(label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(modifier.fillMaxWidth().heightIn(min = 56.dp).clickable(role = Role.Button, onClick = onClick), shape = RoundedCornerShape(16.dp), color = NightPalette.accent) {
-        Box(contentAlignment = Alignment.Center) {
+    Surface(
+        modifier.fillMaxWidth().heightIn(min = 58.dp).clickable(role = Role.Button, onClick = onClick),
+        shape = RoundedCornerShape(17.dp),
+        color = Color.Transparent,
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = .3f)),
+    ) {
+        Box(
+            Modifier.background(
+                androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFF5DE0F2), Color(0xFF8D9BFF), Color(0xFFB18CFF))),
+                RoundedCornerShape(17.dp),
+            ),
+            contentAlignment = Alignment.Center,
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(label, style = TextStyle(fontFamily = FigTree, fontWeight = FontWeight.SemiBold, color = NightPalette.onAccent, fontSize = 17.sp, lineHeight = 22.sp))
-                Text("›", color = NightPalette.onAccent, fontSize = 23.sp)
+                Text(label, style = TextStyle(fontFamily = FigTree, fontWeight = FontWeight.Bold, color = Color(0xFF071321), fontSize = 17.sp, lineHeight = 22.sp))
+                Text("›", color = Color(0xFF071321), fontSize = 23.sp)
             }
         }
     }
@@ -544,7 +619,13 @@ private fun ModeCard(title: String, description: String, detail: String, glyph: 
         shape = RoundedCornerShape(20.dp), color = NightPalette.surface,
         border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line),
     ) {
-        Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(
+            Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(
+                Color(0xCC192846), Color(0xAA121A31), Color(0xAA242044),
+            ))).padding(18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
             Box(Modifier.size(54.dp).clip(CircleShape).background(NightPalette.raised), contentAlignment = Alignment.Center) {
                 Text(glyph, color = NightPalette.purple, fontSize = 29.sp)
             }
@@ -677,7 +758,13 @@ private fun settingLabel(setting: UiSetting): Int = when (setting) {
 
 @Composable
 private fun SettingRow(label: String, enabled: Boolean, onChange: (Boolean) -> Unit) {
-    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(NightPalette.surface).padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
+            .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFF192846), NightPalette.surface, Color(0xFF211D3D))))
+            .border(1.dp, NightPalette.line.copy(alpha = .75f), RoundedCornerShape(16.dp))
+            .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Text(label, style = BodyStyle, modifier = Modifier.weight(1f))
         Switch(checked = enabled, onCheckedChange = onChange)
     }
@@ -737,7 +824,11 @@ private fun AchievementRow(achievement: UiAchievement) {
 @Composable
 private fun StatTile(title: String, value: String, modifier: Modifier = Modifier) {
     Surface(modifier, shape = RoundedCornerShape(18.dp), color = NightPalette.surface, border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line)) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+        Column(
+            Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFF1B2A49), NightPalette.surface, Color(0xFF211D3D))))
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
             Text(title, style = LabelStyle)
             Text(value, style = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.Bold, color = NightPalette.strong, fontSize = 25.sp, lineHeight = 31.sp))
         }
