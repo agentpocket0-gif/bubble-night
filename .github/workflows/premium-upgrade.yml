@@ -1,5 +1,5 @@
 name: Premium complete upgrade
-# The runner regenerates only changed Level 1 certificates before packaging.
+# Run UI, level-content and packaging checks before publishing artifacts.
 
 on:
   push:
