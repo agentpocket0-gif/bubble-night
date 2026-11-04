@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: premium-upgrade-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   certify-and-build:
@@ -41,7 +41,7 @@ jobs:
 
       - name: Solve expanded Level 1 and write real certificates
         run: |
-          ./gradlew :leveltool:run --args='solve --catalog content/catalog.json --output content/certificates --resume --beam 128 --max-expanded 100000 --timeout-ms 30000 --jobs 2' --console=plain --max-workers=2
+          ./gradlew :leveltool:run --args='solve --catalog content/catalog.json --output content/certificates --resume --beam 128 --max-expanded 100000 --timeout-ms 30000 --jobs 2 --level level-0001' --console=plain --max-workers=2
 
       - name: Rebalance Level 1 star targets and replay certificates
         run: |
