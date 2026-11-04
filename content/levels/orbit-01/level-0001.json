@@ -9,14 +9,20 @@
   "learningTags": [
     "direct-aim"
   ],
-  "revision": 3,
-  "authorNotes": "Expanded opening boards for a fuller first-play experience; solver certification and balance are regenerated in CI.",
+  "revision": 4,
+  "authorNotes": "Dense two-color opening formation tuned for a clear tutorial; certificates are regenerated and replay-verified by CI.",
   "variants": {
     "easy": {
       "seedHex": "de0798c2e2b49078",
       "board": [
         {
           "r": 0,
+          "c": 1,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 0,
           "c": 2,
           "kind": "color",
           "color": "blue"
@@ -31,7 +37,7 @@
           "r": 0,
           "c": 4,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 0,
@@ -46,28 +52,16 @@
           "color": "purple"
         },
         {
-          "r": 0,
-          "c": 7,
+          "r": 1,
+          "c": 1,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 1,
           "c": 2,
           "kind": "color",
           "color": "blue"
-        },
-        {
-          "r": 1,
-          "c": 3,
-          "kind": "color",
-          "color": "blue"
-        },
-        {
-          "r": 1,
-          "c": 4,
-          "kind": "color",
-          "color": "purple"
         },
         {
           "r": 1,
@@ -83,29 +77,35 @@
         },
         {
           "r": 2,
-          "c": 3,
+          "c": 2,
           "kind": "color",
-          "color": "green"
+          "color": "blue"
         },
         {
           "r": 2,
-          "c": 4,
+          "c": 3,
           "kind": "color",
-          "color": "green"
+          "color": "blue"
         },
         {
           "r": 2,
           "c": 5,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
+        },
+        {
+          "r": 2,
+          "c": 6,
+          "kind": "color",
+          "color": "purple"
         }
       ],
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 100,
-      "threeStarMaxShots": 100,
-      "twoStarMaxShots": 100,
+      "maxShots": 30,
+      "threeStarMaxShots": 30,
+      "twoStarMaxShots": 30,
       "expectedMetrics": {
         "familyId": "open-corridor",
         "minBounces": 0
@@ -116,6 +116,12 @@
       "board": [
         {
           "r": 0,
+          "c": 0,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 0,
           "c": 1,
           "kind": "color",
           "color": "blue"
@@ -158,6 +164,12 @@
         },
         {
           "r": 1,
+          "c": 0,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 1,
           "c": 1,
           "kind": "color",
           "color": "blue"
@@ -172,7 +184,7 @@
           "r": 1,
           "c": 3,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 1,
@@ -193,54 +205,42 @@
           "color": "purple"
         },
         {
+          "r": 1,
+          "c": 7,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
           "r": 2,
           "c": 1,
           "kind": "color",
-          "color": "green"
+          "color": "blue"
         },
         {
           "r": 2,
           "c": 2,
           "kind": "color",
-          "color": "green"
-        },
-        {
-          "r": 2,
-          "c": 3,
-          "kind": "color",
-          "color": "green"
-        },
-        {
-          "r": 2,
-          "c": 4,
-          "kind": "color",
-          "color": "green"
-        },
-        {
-          "r": 2,
-          "c": 5,
-          "kind": "color",
-          "color": "green"
+          "color": "blue"
         },
         {
           "r": 2,
           "c": 6,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 2,
           "c": 7,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         }
       ],
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 100,
-      "threeStarMaxShots": 100,
-      "twoStarMaxShots": 100,
+      "maxShots": 30,
+      "threeStarMaxShots": 30,
+      "twoStarMaxShots": 30,
       "expectedMetrics": {
         "familyId": "open-corridor",
         "minBounces": 0
@@ -271,7 +271,7 @@
           "r": 0,
           "c": 3,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
@@ -289,19 +289,19 @@
           "r": 0,
           "c": 6,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 0,
           "c": 7,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 0,
           "c": 8,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 1,
@@ -325,7 +325,7 @@
           "r": 1,
           "c": 3,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 1,
@@ -337,19 +337,19 @@
           "r": 1,
           "c": 5,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 6,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 7,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 2,
@@ -373,13 +373,7 @@
           "r": 2,
           "c": 3,
           "kind": "color",
-          "color": "purple"
-        },
-        {
-          "r": 2,
-          "c": 4,
-          "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 2,
@@ -391,27 +385,27 @@
           "r": 2,
           "c": 6,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 2,
           "c": 7,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         },
         {
           "r": 2,
           "c": 8,
           "kind": "color",
-          "color": "green"
+          "color": "purple"
         }
       ],
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 100,
-      "threeStarMaxShots": 100,
-      "twoStarMaxShots": 100,
+      "maxShots": 30,
+      "threeStarMaxShots": 30,
+      "twoStarMaxShots": 30,
       "expectedMetrics": {
         "familyId": "open-corridor",
         "minBounces": 0
