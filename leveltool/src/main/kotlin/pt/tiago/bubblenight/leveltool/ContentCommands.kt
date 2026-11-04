@@ -79,14 +79,16 @@ internal object ContentCommands {
         return 0
     }
 
-    fun solve(catalogPath: Path, output: Path, resume: Boolean, beam: Int, maxExpanded: Int, timeoutMillis: Long, jobs: Int = 1): Int {
+    fun solve(catalogPath: Path, output: Path, resume: Boolean, beam: Int, maxExpanded: Int, timeoutMillis: Long, jobs: Int = 1, levelId: String? = null): Int {
         val catalogFile = catalogPath.toAbsolutePath().normalize()
         val catalog = read<ContentCatalog>(catalogFile)
         val projectRoot = contentRoot(catalogFile)
         val problems = validateCatalog(catalog, catalogFile, projectRoot)
         if (problems.isNotEmpty()) throw CliFailure(problems.joinToString("\n", prefix = "Solver refused an invalid catalog:\n  - "))
         val certificatesRoot = output.toAbsolutePath().normalize()
-        val tasks = catalog.levels.sortedBy { it.ordinal }.flatMap { entry ->
+        val selectedEntries = catalog.levels.sortedBy { it.ordinal }.filter { levelId == null || it.id == levelId }
+        if (levelId != null && selectedEntries.isEmpty()) throw CliFailure("Unknown level id: $levelId")
+        val tasks = selectedEntries.flatMap { entry ->
             val source = read<SourceLevel>(resolveEntry(projectRoot, entry.path))
             listOf("easy", "medium", "hard").map { source to it }
         }
