@@ -71,7 +71,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add content/catalog.json content/levels/orbit-01/level-0001.json content/certificates/level-0001
+          git add content/catalog.json content/levels/orbit-01 content/certificates
           if ! git diff --cached --quiet; then
             git commit -m "Certify expanded opening level [skip ci]"
             git push origin HEAD:premium-complete-upgrade
