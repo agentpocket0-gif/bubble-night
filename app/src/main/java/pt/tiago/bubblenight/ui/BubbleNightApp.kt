@@ -446,9 +446,17 @@ private fun MapPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier) 
             }
         }
         val current = orbit?.nodes?.firstOrNull { it.state == UiLevelNode.NodeState.CURRENT }
-        if (!unfinishedStars && current != null) PrimaryButton(stringResource(R.string.map_play_level, current.number), {
-            callbacks.onOpenPreparation(current.id)
-        }, Modifier.padding(bottom = 8.dp))
+        if (!unfinishedStars && current != null) {
+            val actionLabel = if (model.hasCampaignSession) {
+                stringResource(R.string.map_resume_level, current.number)
+            } else {
+                stringResource(R.string.map_play_level, current.number)
+            }
+            PrimaryButton(actionLabel, {
+                if (model.hasCampaignSession) callbacks.onContinue()
+                else callbacks.onOpenPreparation(current.id)
+            }, Modifier.padding(bottom = 8.dp))
+        }
     }
 }
 
