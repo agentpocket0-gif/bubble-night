@@ -1,0 +1,30 @@
+name: OpenHands Bubble Night PR Review
+
+on:
+  pull_request:
+    types: [labeled, review_requested]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    if: >-
+      github.event.label.name == 'review-this' ||
+      github.event.requested_reviewer.login == 'openhands-agent'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Run the pinned OpenHands PR reviewer
+        uses: OpenHands/extensions/plugins/pr-review@7a4db02d53b28cc291d92f84b61c4f95790b2e69
+        with:
+          llm-model: ${{ vars.OPENHANDS_LLM_MODEL }}
+          llm-base-url: ${{ vars.OPENHANDS_LLM_BASE_URL }}
+          llm-api-key: ${{ secrets.LLM_API_KEY }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          extensions-version: 7a4db02d53b28cc291d92f84b61c4f95790b2e69
+          load-public-skills: 'false'
+          use-sub-agents: 'false'
+          collect-feedback: 'false'
