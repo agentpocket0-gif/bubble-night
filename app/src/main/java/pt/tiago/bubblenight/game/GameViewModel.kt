@@ -188,12 +188,16 @@ class GameViewModel(application: Application) : AndroidViewModel(application), U
         profile = repository.update { it.copy(settings = it.settings.copy(lastDifficulty = saved.difficulty)) }
         endless = (profile.freeSession as? FreeSession.Endless)?.run.takeIf { saved.mode == GameMode.ENDLESS }
         freeChoice = if (saved.mode == GameMode.ZEN) UiFreeMode.ZEN else UiFreeMode.INFINITE
-        pauseRequested = true
+        // A deliberate Resume action returns directly to the saved board while the app is
+        // foregrounded. If restoration happens in the background, keep it paused until visible.
+        pauseRequested = !foreground
         angle = 0; animationEvents = emptyList(); aimHint = null
         preview = GameEngine.preview(saved, angle)
-        screen = if (saved.outcome == Outcome.READY) UiScreen.PAUSED else outcomeScreen(saved)
+        screen = if (saved.outcome == Outcome.READY) {
+            if (foreground) gameScreen(saved) else UiScreen.PAUSED
+        } else outcomeScreen(saved)
         selectedId = saved.level.baseId
-        audio.setActive(false)
+        audio.setActive(foreground && saved.outcome == Outcome.READY)
     }
 
     override fun onOpenMap() {
