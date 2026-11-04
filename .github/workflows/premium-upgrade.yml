@@ -1,4 +1,5 @@
 name: Premium complete upgrade
+# The runner regenerates Level 1 certificates before packaging.
 
 on:
   push:
