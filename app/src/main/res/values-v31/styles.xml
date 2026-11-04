@@ -1,0 +1,13 @@
+<resources>
+    <style name="Theme.BubbleNight" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">#080B18</item>
+        <item name="android:colorAccent">#62D8F5</item>
+        <item name="android:statusBarColor">#080B18</item>
+        <item name="android:navigationBarColor">#080B18</item>
+        <item name="android:windowSplashScreenBackground">#080B18</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">#121A30</item>
+    </style>
+</resources>
