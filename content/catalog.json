@@ -168,8 +168,8 @@
       "id": "level-0013",
       "ordinal": 13,
       "path": "content/levels/orbit-01/level-0013.json",
-      "revision": 3,
-      "sha256": "93c7ec6706f88514e4f4fc6d4b1f37d3c2c4145743eb6c6a4cef9ffd878e9d18"
+      "revision": 2,
+      "sha256": "1e04156ac3d77459a8de2565cb7c4f31202f4bab8eb6648096e946a1cab355e5"
     },
     {
       "id": "level-0014",
@@ -217,8 +217,8 @@
       "id": "level-0020",
       "ordinal": 20,
       "path": "content/levels/orbit-01/level-0020.json",
-      "revision": 3,
-      "sha256": "e2257606839f846695d17b39a7362a2ae3be3aa6ba72b6a6b51d934298f85566"
+      "revision": 2,
+      "sha256": "7f4375a841bf74014071f4789c39eb65ee3ef8048b739e2c0a100ae1e37356c7"
     },
     {
       "id": "level-0021",
@@ -245,8 +245,8 @@
       "id": "level-0024",
       "ordinal": 24,
       "path": "content/levels/orbit-01/level-0024.json",
-      "revision": 3,
-      "sha256": "bd56b751efc6d9f1cb3ac631e15dec5e1d9958dff176f499b58ed5073c49b510"
+      "revision": 2,
+      "sha256": "c214efd5a133272f4e61b5383ddca63efae55358e30506f2e41ecd2cafe87a9f"
     },
     {
       "id": "level-0025",
@@ -273,8 +273,8 @@
       "id": "level-0028",
       "ordinal": 28,
       "path": "content/levels/orbit-01/level-0028.json",
-      "revision": 3,
-      "sha256": "553b32a7cd0022343ce4bab5589ed0ea3b2feb4d0cb186c406a64ea66e41e410"
+      "revision": 2,
+      "sha256": "6ca88c2cf0bac6ef67979b5eb74611561e22a6a46dd929f69f4ed80d211bf3c4"
     },
     {
       "id": "level-0029",
@@ -294,8 +294,8 @@
       "id": "level-0031",
       "ordinal": 31,
       "path": "content/levels/orbit-01/level-0031.json",
-      "revision": 3,
-      "sha256": "805f52f5879c8989f4ac0a62090a084a2bdfd3bc49109594fa9ae14f1c8726a4"
+      "revision": 2,
+      "sha256": "57f2e778c076e21d270b4b7746526878d52f25c8f6f323589f70f547e1d8d0bd"
     },
     {
       "id": "level-0032",
@@ -329,8 +329,8 @@
       "id": "level-0036",
       "ordinal": 36,
       "path": "content/levels/orbit-01/level-0036.json",
-      "revision": 3,
-      "sha256": "647b6fe4f8417c1040be131f46880ba54415fecb7b042772a41cc2b67b31ab1d"
+      "revision": 2,
+      "sha256": "65d043bd1bcb556b1c3a3ad402ef73777f0b2d17ad1ca67e8bd179c507fe292b"
     },
     {
       "id": "level-0037",
@@ -371,8 +371,8 @@
       "id": "level-0042",
       "ordinal": 42,
       "path": "content/levels/orbit-01/level-0042.json",
-      "revision": 3,
-      "sha256": "47c3225b204dbd1a307cf44bf2c39616b75f507a300cb7e15d013f3875735240"
+      "revision": 2,
+      "sha256": "bc4ed719a111cb22faed3c1587f6076af4c0558f8e4660c5e5cff0a493fcd1d5"
     },
     {
       "id": "level-0043",
@@ -392,8 +392,8 @@
       "id": "level-0045",
       "ordinal": 45,
       "path": "content/levels/orbit-01/level-0045.json",
-      "revision": 3,
-      "sha256": "ac789224f7ec468f19a7841e13487449ccc1091e31b058d80a083586cb4dfbce"
+      "revision": 2,
+      "sha256": "9d1533efc09d579d3c4ca11d653ca17d37d59e19849add9ce61b3c96399aa892"
     },
     {
       "id": "level-0046",
