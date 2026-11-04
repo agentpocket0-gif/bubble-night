@@ -43,7 +43,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application), U
     val ui: StateFlow<UiModel> = mutableUi
     private var profile = Profile()
     private var catalog: RuntimeCatalog? = null
-    private var screen = UiScreen.START
+    private var screen = UiScreen.MAP // Launch into the level map after the real loading step.
     private var returnScreen = UiScreen.START
     private var selectedId = "level-0001"
     private var selectedOrbit = 1
