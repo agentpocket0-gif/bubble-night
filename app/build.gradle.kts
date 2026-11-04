@@ -11,8 +11,8 @@ android {
         applicationId = "pt.tiago.bubblenight"
         minSdk = 26
         targetSdk = 36
-        versionCode = 29
-        versionName = "0.15.1"
+        versionCode = 30
+        versionName = "0.16.0"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
