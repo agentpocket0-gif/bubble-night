@@ -42,7 +42,7 @@ private class LevelToolCli {
                 )
             }
             "solve" -> {
-                options.allow("catalog", "output", "resume", "beam", "max-expanded", "timeout-ms", "jobs")
+                options.allow("catalog", "output", "resume", "beam", "max-expanded", "timeout-ms", "jobs", "level")
                 ContentCommands.solve(
                     options.path("catalog", "content/catalog.json"),
                     options.path("output", "content/certificates"),
@@ -51,6 +51,7 @@ private class LevelToolCli {
                     options.optionalInt("max-expanded", min = 1, max = 5_000_000) ?: 100_000,
                     options.optionalLong("timeout-ms", min = 1_000L, max = 3_600_000L) ?: 30_000L,
                     options.optionalInt("jobs", min = 1, max = 16) ?: 1,
+                    options.optionalString("level"),
                 )
             }
             "verify-certificates" -> {
@@ -116,7 +117,7 @@ private class LevelToolCli {
         println(
             """Bubble Night leveltool
               |  validate --catalog <path> [--strict]
-              |  solve --catalog <path> --output <dir> [--resume] [--jobs <1..16>]
+              |  solve --catalog <path> --output <dir> [--resume] [--jobs <1..16>] [--level <id>]
               |  verify-certificates --catalog <path>
               |  rebalance --catalog <path> [--certificates <dir>] [--content-version <v>] [--orbit <orbits>]
               |  report --catalog <path> [--output <path>]
