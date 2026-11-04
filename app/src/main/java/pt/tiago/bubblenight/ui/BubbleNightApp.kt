@@ -864,12 +864,38 @@ private fun EmptyState(title: String, message: String) {
 
 @Composable
 private fun LoadingOverlay(message: String) {
-    // Drawn in the same window: a Dialog steals focus and makes short waits flicker.
-    Box(Modifier.fillMaxSize().background(NightPalette.background.copy(alpha = .55f)).clickable(enabled = false) {}, contentAlignment = Alignment.Center) {
-        Surface(shape = RoundedCornerShape(22.dp), color = NightPalette.surface, border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line)) {
-            Row(Modifier.padding(horizontal = 22.dp, vertical = 18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                CircularProgressIndicator(Modifier.size(24.dp), color = NightPalette.accent, strokeWidth = 2.dp)
-                Text(message, style = BodyStyle)
+    // Keep this lightweight: no artificial wait, just a branded layer while real work is running.
+    Box(
+        Modifier.fillMaxSize()
+            .background(NightPalette.background.copy(alpha = .78f))
+            .clickable(enabled = false) {},
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(
+            Modifier.fillMaxWidth().padding(horizontal = 28.dp).widthIn(max = 340.dp),
+            shape = RoundedCornerShape(26.dp),
+            color = NightPalette.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.purple.copy(alpha = .58f)),
+            shadowElevation = 18.dp,
+        ) {
+            Column(
+                Modifier.background(
+                    androidx.compose.ui.graphics.Brush.linearGradient(
+                        listOf(Color(0xFF202B4B), Color(0xFF121B35), Color(0xFF241E43)),
+                    ),
+                ).padding(horizontal = 24.dp, vertical = 26.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text("✦", color = NightPalette.cyan, fontSize = 34.sp)
+                Text(stringResource(R.string.app_name), style = TitleStyle)
+                CircularProgressIndicator(
+                    Modifier.size(30.dp).semantics { contentDescription = message },
+                    color = NightPalette.accent,
+                    strokeWidth = 2.5.dp,
+                )
+                Text(message, style = BodyStyle, textAlign = TextAlign.Center)
+                Text(stringResource(R.string.home_tagline), style = LabelStyle, textAlign = TextAlign.Center)
             }
         }
     }
