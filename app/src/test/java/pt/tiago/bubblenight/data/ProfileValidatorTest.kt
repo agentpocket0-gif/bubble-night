@@ -16,6 +16,12 @@ import pt.tiago.bubblenight.core.model.Outcome
 import pt.tiago.bubblenight.core.rules.GameEngine
 
 class ProfileValidatorTest {
+    @Test fun freshProfilesStartOnEasyButExistingPreferencesRemainUnchanged() {
+        assertTrue(Profile().settings.lastDifficulty == Difficulty.EASY)
+        val returning = Profile(settings = Settings(lastDifficulty = Difficulty.HARD))
+        assertTrue(returning.settings.lastDifficulty == Difficulty.HARD)
+    }
+
     @Test fun seenTipsMustBeKnownAndSurviveExport() {
         val profile = Profile(seenTips = setOf(TIP_STAR, TIP_ROCK))
         assertTrue(ProfileValidator.violations(profile).isEmpty())
