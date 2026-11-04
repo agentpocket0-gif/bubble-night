@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: premium-upgrade-${{ github.ref }}
+  group: premium-upgrade-v2-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
