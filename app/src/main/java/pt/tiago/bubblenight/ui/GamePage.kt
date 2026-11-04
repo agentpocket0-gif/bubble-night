@@ -104,22 +104,22 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 private val BoardColors = mapOf(
-    UiBubbleColor.BLUE to Color(0xFF7AA2F7), UiBubbleColor.PURPLE to Color(0xFFBB9AF7),
-    UiBubbleColor.GREEN to Color(0xFF9ECE6A), UiBubbleColor.ORANGE to Color(0xFFFF9E64),
-    UiBubbleColor.PINK to Color(0xFFF7768E), UiBubbleColor.CYAN to Color(0xFF7DCFFF),
+    UiBubbleColor.BLUE to Color(0xFF58BDF5), UiBubbleColor.PURPLE to Color(0xFFB18CFF),
+    UiBubbleColor.GREEN to Color(0xFF76E0B5), UiBubbleColor.ORANGE to Color(0xFFFFC46B),
+    UiBubbleColor.PINK to Color(0xFFFF79B7), UiBubbleColor.CYAN to Color(0xFF5CE1E6),
 )
-private val BoardBg = Color(0xFF1A1B26)
-private val BoardLine = Color(0xFF414868)
-private val BoardText = Color(0xFFC0CAF5)
-private val BoardStrong = Color(0xFFE2E8FF)
-private val BoardMuted = Color(0xFF8C94BE)
-private val BoardAccent = Color(0xFF7AA2F7)
-private val BoardPurple = Color(0xFFBB9AF7)
-private val BoardPink = Color(0xFFF7768E)
-private val BoardOrange = Color(0xFFFF9E64)
-private val BoardSurface = Color(0xFF24283B)
-private val BoardRaised = Color(0xFF292E42)
-private val BoardOnAccent = Color(0xFF16161E)
+private val BoardBg = Color(0xFF080B18)
+private val BoardLine = Color(0xFF344365)
+private val BoardText = Color(0xFFC9D8F2)
+private val BoardStrong = Color(0xFFF5F7FF)
+private val BoardMuted = Color(0xFF8191B5)
+private val BoardAccent = Color(0xFF62D8F5)
+private val BoardPurple = Color(0xFFB18CFF)
+private val BoardPink = Color(0xFFFF79B7)
+private val BoardOrange = Color(0xFFFFC46B)
+private val BoardSurface = Color(0xFF121A30)
+private val BoardRaised = Color(0xFF1B2742)
+private val BoardOnAccent = Color(0xFF071321)
 private val BoardFont = FontFamily(Font(R.font.figtree))
 private val BoardDisplayFont = FontFamily(Font(R.font.bricolage_grotesque))
 
@@ -498,7 +498,22 @@ private fun DrawScope.drawNightBoard(
     fun px(point: UiPoint) = Offset(point.x * unitX, point.y * unitY)
     fun center(bubble: UiBubble) = Offset((1f + bubble.column * 2f + if (bubble.row % 2 == 1) 1f else 0f) * unitX, (1f + bubble.row * kotlin.math.sqrt(3f)) * unitY)
 
-    drawRoundRect(BoardBg.copy(alpha = .52f), topLeft = Offset(0f, 0f), size = size, cornerRadius = androidx.compose.ui.geometry.CornerRadius(size.width * .1f))
+    drawRoundRect(
+        Brush.linearGradient(listOf(Color(0xFF0A1125), Color(0xFF151B38), Color(0xFF0A1024)), start = Offset.Zero, end = Offset(size.width, size.height)),
+        topLeft = Offset(0f, 0f),
+        size = size,
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(size.width * .1f),
+    )
+    drawCircle(
+        Brush.radialGradient(listOf(BoardPurple.copy(alpha = .16f), Color.Transparent), center = Offset(size.width * .2f, size.height * .22f), radius = size.width * .72f),
+        radius = size.width * .72f,
+        center = Offset(size.width * .2f, size.height * .22f),
+    )
+    drawCircle(
+        Brush.radialGradient(listOf(BoardAccent.copy(alpha = .12f), Color.Transparent), center = Offset(size.width * .82f, size.height * .58f), radius = size.width * .6f),
+        radius = size.width * .6f,
+        center = Offset(size.width * .82f, size.height * .58f),
+    )
     // Thin framed arch. Its curve is decorative; the physical side walls remain straight.
     drawRoundRect(BoardLine.copy(alpha = .45f), topLeft = Offset(unitX * .08f, unitY * .08f), size = Size(size.width - unitX * .16f, size.height - unitY * .16f), cornerRadius = androidx.compose.ui.geometry.CornerRadius(unitX * 2.1f), style = Stroke(width = .8.dp.toPx()))
 
@@ -649,12 +664,38 @@ internal fun DrawScope.drawSatinBubble(center: Offset, radius: Float, bubble: Ui
         drawLine(Color(0xFF5E6378).copy(alpha = alpha), Offset(center.x - radius * .91f, center.y + radius * .08f), Offset(center.x + radius * .03f, center.y + radius * .12f), .8.dp.toPx())
         return
     }
-    val fill = if (bubble.kind == UiBubbleKind.STAR) Color(0xFF312B50) else BoardColors[bubble.color] ?: BoardAccent
-    drawCircle(Color.Black.copy(alpha = .28f * alpha), radius * 1.04f, Offset(center.x, center.y + radius * .08f))
-    drawCircle(Brush.radialGradient(listOf(lerp(fill, Color.White, .25f).copy(alpha = alpha), fill.copy(alpha = alpha), lerp(fill, Color.Black, .4f).copy(alpha = alpha)), center = Offset(center.x - radius * .2f, center.y - radius * .3f), radius = radius * 1.45f), radius, center)
-    drawCircle(fill.copy(alpha = alpha * .75f), radius, center, style = Stroke(width = .8.dp.toPx()))
-    // The highlight stays small so the fixed symbol remains the visual anchor.
-    drawOval(Color.White.copy(alpha = .24f * alpha), topLeft = Offset(center.x - radius * .58f, center.y - radius * .69f), size = Size(radius * .5f, radius * .17f))
+    val fill = if (bubble.kind == UiBubbleKind.STAR) Color(0xFF30264F) else BoardColors[bubble.color] ?: BoardAccent
+    // Soft contact shadow gives each bubble separation from the board.
+    drawCircle(Color.Black.copy(alpha = .42f * alpha), radius * 1.08f, Offset(center.x, center.y + radius * .12f))
+    // Multi-stop radial lighting creates a glossy, glass-like sphere without a 3D engine.
+    drawCircle(
+        Brush.radialGradient(
+            listOf(
+                lerp(fill, Color.White, .68f).copy(alpha = alpha),
+                lerp(fill, Color.White, .28f).copy(alpha = alpha),
+                fill.copy(alpha = alpha),
+                lerp(fill, Color.Black, .58f).copy(alpha = alpha),
+            ),
+            center = Offset(center.x - radius * .28f, center.y - radius * .34f),
+            radius = radius * 1.52f,
+        ),
+        radius,
+        center,
+    )
+    // Subtle glass rim and a lower bevel make the sphere read as a premium game object.
+    drawCircle(Color.White.copy(alpha = .3f * alpha), radius * .96f, center, style = Stroke(width = 1.15.dp.toPx()))
+    drawArc(
+        color = Color(0xFF071321).copy(alpha = .42f * alpha),
+        startAngle = 18f,
+        sweepAngle = 144f,
+        useCenter = false,
+        topLeft = Offset(center.x - radius * .89f, center.y - radius * .89f),
+        size = Size(radius * 1.78f, radius * 1.78f),
+        style = Stroke(width = 1.05.dp.toPx()),
+    )
+    drawOval(Color.White.copy(alpha = .42f * alpha), topLeft = Offset(center.x - radius * .62f, center.y - radius * .7f), size = Size(radius * .52f, radius * .2f))
+    drawCircle(Color.White.copy(alpha = .3f * alpha), radius * .095f, Offset(center.x - radius * .35f, center.y - radius * .43f))
+    drawOval(Color.White.copy(alpha = .12f * alpha), topLeft = Offset(center.x - radius * .28f, center.y + radius * .56f), size = Size(radius * .56f, radius * .1f))
     if (bubble.kind == UiBubbleKind.STAR) {
         drawCircle(BoardPurple.copy(alpha = alpha), radius * .92f, center, style = Stroke(width = 1.5.dp.toPx()))
         drawCircle(BoardText.copy(alpha = alpha), radius * .68f, center, style = Stroke(width = 1.dp.toPx()))
