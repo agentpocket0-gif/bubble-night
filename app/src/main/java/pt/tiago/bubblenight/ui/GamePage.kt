@@ -231,7 +231,11 @@ private fun GameHud(game: UiGame, isFree: Boolean, model: UiModel, callbacks: Ui
         shape = RoundedCornerShape(16.dp), color = BoardSurface.copy(alpha = .82f),
         border = androidx.compose.foundation.BorderStroke(1.dp, if (game.danger) BoardPink.copy(alpha = .7f) else BoardLine.copy(alpha = .7f)),
     ) {
-        Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.background(Brush.linearGradient(listOf(Color(0xCC1B2B4A), Color(0xBB121B35), Color(0xBB252044))))
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     game.objectiveLabel + if (game.objectiveProgress.isNotBlank()) " · ${game.objectiveProgress}" else "",
@@ -263,8 +267,17 @@ private fun TutorialCard(game: UiGame, callbacks: UiCallbacks) {
         1 -> R.string.tutorial_swap
         else -> R.string.tutorial_match
     })
-    Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), color = BoardRaised) {
-        Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Surface(
+        Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(15.dp),
+        color = BoardRaised,
+        border = androidx.compose.foundation.BorderStroke(1.dp, BoardPurple.copy(alpha = .5f)),
+    ) {
+        Column(
+            Modifier.background(Brush.linearGradient(listOf(Color(0xFF20294A), Color(0xFF151D38), Color(0xFF292044))))
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
             Text(text, style = Caption.copy(color = BoardStrong))
             Text(stringResource(if (game.tutorialStep == 2) R.string.tutorial_start else R.string.tutorial_skip), color = BoardAccent,
                 modifier = Modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = callbacks::onFinishTutorial).wrapContentHeight())
@@ -763,7 +776,12 @@ private fun SwapAndNext(game: UiGame, callbacks: UiCallbacks, compact: Boolean =
                 .semantics { contentDescription = swapDescription },
             shape = RoundedCornerShape(15.dp), color = BoardSurface, border = androidx.compose.foundation.BorderStroke(1.dp, BoardLine),
         ) {
-            Row(Modifier.padding(horizontal = 15.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+            Row(
+                Modifier.background(Brush.linearGradient(listOf(Color(0xFF24375B), Color(0xFF18243F))))
+                    .padding(horizontal = 15.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(9.dp),
+            ) {
                 SwapGlyph(Modifier.size(20.dp))
                 Text(swapLabel, style = TextStyle(fontFamily = BoardFont, color = BoardText, fontSize = 15.sp, fontWeight = FontWeight.Medium))
             }
@@ -857,9 +875,22 @@ private fun AimControl(direction: Int, game: UiGame, callbacks: UiCallbacks, mod
 
 @Composable
 private fun ControlButton(label: String, description: String, modifier: Modifier, primary: Boolean = false, enabled: Boolean = true, onClick: () -> Unit) {
-    Surface(modifier.heightIn(min = 48.dp).clickable(enabled = enabled, role = Role.Button, onClick = onClick).semantics { contentDescription = description }, shape = RoundedCornerShape(13.dp), color = if (primary) BoardAccent else BoardSurface, border = if (primary) null else androidx.compose.foundation.BorderStroke(1.dp, BoardLine)) {
-        Box(Modifier.padding(horizontal = 6.dp), contentAlignment = Alignment.Center) {
-            Text(label, style = TextStyle(color = if (primary) BoardOnAccent else BoardText, fontSize = 14.sp, fontWeight = FontWeight.SemiBold), textAlign = TextAlign.Center)
+    Surface(
+        modifier.heightIn(min = 50.dp).clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .semantics { contentDescription = description },
+        shape = RoundedCornerShape(14.dp),
+        color = if (primary) BoardAccent else BoardSurface,
+        border = if (primary) androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = .28f))
+            else androidx.compose.foundation.BorderStroke(1.dp, BoardLine),
+    ) {
+        Box(
+            Modifier.background(
+                if (primary) Brush.linearGradient(listOf(Color(0xFF5DE0F2), Color(0xFF8D9BFF), Color(0xFFB18CFF)))
+                else Brush.linearGradient(listOf(Color(0xFF24375B), Color(0xFF151F39))),
+            ).padding(horizontal = 6.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(label, style = TextStyle(color = if (primary) BoardOnAccent else BoardText, fontSize = 14.sp, fontWeight = FontWeight.Bold), textAlign = TextAlign.Center)
         }
     }
 }
@@ -893,8 +924,18 @@ private fun GameOverlay(
     tips: List<UiTip> = emptyList(),
 ) {
     Box(Modifier.fillMaxSize().background(BoardBg.copy(alpha = .76f)).clickable(enabled = false) {}, contentAlignment = Alignment.Center) {
-        Surface(Modifier.fillMaxWidth().padding(horizontal = 22.dp).widthIn(max = 440.dp), shape = RoundedCornerShape(28.dp), color = BoardSurface, border = androidx.compose.foundation.BorderStroke(1.dp, BoardLine)) {
-            Column(Modifier.verticalScroll(rememberScrollState()).padding(22.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Surface(
+            Modifier.fillMaxWidth().padding(horizontal = 22.dp).widthIn(max = 440.dp),
+            shape = RoundedCornerShape(28.dp),
+            color = BoardSurface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, BoardPurple.copy(alpha = .58f)),
+        ) {
+            Column(
+                Modifier.background(Brush.linearGradient(listOf(Color(0xFF202B4B), Color(0xFF121B35), Color(0xFF241E43))))
+                    .verticalScroll(rememberScrollState()).padding(22.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 Text("☾", color = BoardPurple, fontSize = 31.sp)
                 Text(title, style = TextStyle(fontFamily = BoardDisplayFont, fontWeight = FontWeight.Bold, color = BoardStrong, fontSize = 26.sp))
                 Text(message, style = TextStyle(color = BoardText, fontSize = 16.sp, lineHeight = 22.sp), textAlign = TextAlign.Center)
