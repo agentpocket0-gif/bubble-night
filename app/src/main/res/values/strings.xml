@@ -185,6 +185,7 @@
     <string name="map_no_unfinished">No completed level in this orbit has stars left to earn yet.</string>
     <string name="map_unavailable">This orbit map is not available yet.</string>
     <string name="map_play_level">Play level %d</string>
+    <string name="map_resume_level">Resume level %d</string>
     <string name="map_locked">Locked</string>
     <string name="cd_level_locked">Level %d, locked</string>
     <string name="cd_level_available">Level %d, available</string>
