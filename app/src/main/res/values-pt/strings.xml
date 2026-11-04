@@ -184,6 +184,7 @@
     <string name="map_no_unfinished">Ainda não há níveis concluídos com estrelas por conquistar nesta órbita.</string>
     <string name="map_unavailable">O mapa desta órbita ainda não está disponível.</string>
     <string name="map_play_level">Jogar nível %d</string>
+    <string name="map_resume_level">Retomar nível %d</string>
     <string name="map_locked">Bloqueado</string>
     <string name="cd_level_locked">Nível %d, bloqueado</string>
     <string name="cd_level_available">Nível %d, disponível</string>
