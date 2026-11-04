@@ -18,7 +18,7 @@ data class Settings(
     val reducedMotion: Boolean = false,
     /** Kept for profile compatibility; the guide now follows the difficulty (see fullAimGuide). */
     val aimAssist: Boolean = true,
-    val lastDifficulty: Difficulty = Difficulty.MEDIUM,
+    val lastDifficulty: Difficulty = Difficulty.EASY,
     /** Shows the whole trajectory on every difficulty instead of the difficulty's own guide. */
     val fullAimGuide: Boolean = false,
     /** Hidden test mode (seven taps on the version in Settings): every level can be opened. */
