@@ -9,7 +9,7 @@
   "learningTags": [
     "direct-aim"
   ],
-  "revision": 4,
+  "revision": 5,
   "authorNotes": "Dense two-color opening formation tuned for a clear tutorial; certificates are regenerated and replay-verified by CI.",
   "variants": {
     "easy": {
@@ -103,9 +103,9 @@
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 30,
-      "threeStarMaxShots": 30,
-      "twoStarMaxShots": 30,
+      "maxShots": 10,
+      "threeStarMaxShots": 5,
+      "twoStarMaxShots": 7,
       "expectedMetrics": {
         "familyId": "open-corridor",
         "minBounces": 0
@@ -238,9 +238,9 @@
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 30,
-      "threeStarMaxShots": 30,
-      "twoStarMaxShots": 30,
+      "maxShots": 7,
+      "threeStarMaxShots": 4,
+      "twoStarMaxShots": 5,
       "expectedMetrics": {
         "familyId": "open-corridor",
         "minBounces": 0
@@ -403,9 +403,9 @@
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 30,
-      "threeStarMaxShots": 30,
-      "twoStarMaxShots": 30,
+      "maxShots": 5,
+      "threeStarMaxShots": 3,
+      "twoStarMaxShots": 4,
       "expectedMetrics": {
         "familyId": "open-corridor",
         "minBounces": 0

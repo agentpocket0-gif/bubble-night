@@ -2,23 +2,23 @@
   "schemaVersion": 1,
   "baseId": "level-0001",
   "difficulty": "medium",
-  "levelRevision": 2,
-  "levelSemanticHash": "658aa5b5b1998dc44f064900d4377a8697fd39f96c564d2a4f22906645261405",
+  "levelRevision": 5,
+  "levelSemanticHash": "e0bcdbb11a2212a1ab182990f59a470a63ee3a7cb95b2e3aa53eaac551a8c8f8",
   "engineVersion": 1,
   "seedHex": "3cf1f190f320bd07",
-  "initialStateHash": "b2a55355333b35e0804c85a4f7d17f81c54c3a7bd6e2d80946067d4fef823da1",
+  "initialStateHash": "00539ff197bda19e2a165d4685d90718f3ce40aff0ec89a41382ca04630c139c",
   "steps": [
     {
-      "swapBefore": true,
-      "angleMilliDegrees": -1400,
-      "afterStateHash": "d2259e8cb071858468e369bc4bcfb2f3acec77b531af7c459c0b30b109de418a",
+      "swapBefore": false,
+      "angleMilliDegrees": 0,
+      "afterStateHash": "5252e0c10c5fd8ec08c34acdeb0b65282ddebf366cf924205879f18f0f13ecff",
       "metrics": {
         "target": {
-          "r": 1,
-          "c": 3
+          "r": 2,
+          "c": 4
         },
         "bounces": 0,
-        "matchedCells": 4,
+        "matchedCells": 11,
         "droppedCells": 0,
         "rescuedStars": 0,
         "testedAimWindowMilliDegrees": 2000
@@ -26,37 +26,37 @@
     },
     {
       "swapBefore": false,
-      "angleMilliDegrees": -1800,
-      "afterStateHash": "0a1e0122feeaf253d6d834f94be34c1fe026b0c2e5cadd1bce72c07b8c8bdd2b",
+      "angleMilliDegrees": -350,
+      "afterStateHash": "a1f9e3d7ec85f5abd5e9213543a0b2c93d75c8f20864869f01f26cc431ed52c8",
       "metrics": {
         "target": {
-          "r": 1,
-          "c": 3
+          "r": 2,
+          "c": 4
         },
         "bounces": 0,
-        "matchedCells": 3,
+        "matchedCells": 11,
         "droppedCells": 0,
         "rescuedStars": 0,
         "testedAimWindowMilliDegrees": 2000
       }
     }
   ],
-  "finalStateHash": "0a1e0122feeaf253d6d834f94be34c1fe026b0c2e5cadd1bce72c07b8c8bdd2b",
+  "finalStateHash": "a1f9e3d7ec85f5abd5e9213543a0b2c93d75c8f20864869f01f26cc431ed52c8",
   "shotsUsed": 2,
-  "score": 525,
+  "score": 870,
   "rescuedStars": 0,
   "outcome": "WON",
   "aimWindows": [
     {
       "stepIndex": 0,
-      "lowerMilliDegrees": -2400,
-      "upperMilliDegrees": -400,
+      "lowerMilliDegrees": -1000,
+      "upperMilliDegrees": 1000,
       "testedWidthMilliDegrees": 2000
     },
     {
       "stepIndex": 1,
-      "lowerMilliDegrees": -2800,
-      "upperMilliDegrees": -800,
+      "lowerMilliDegrees": -1350,
+      "upperMilliDegrees": 650,
       "testedWidthMilliDegrees": 2000
     }
   ]
