@@ -1,0 +1,51 @@
+name: Bubble Night Android UI Smoke Test
+
+on:
+  push:
+    branches:
+      - premium-complete-upgrade
+    paths:
+      - "app/**"
+      - "core/**"
+      - "gradle/**"
+      - "gradlew"
+      - "settings.gradle.kts"
+      - ".maestro/**"
+      - ".github/workflows/maestro-ui-smoke.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maestro-ui-smoke-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  first-run-journey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build and test first-run journey on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          script: |
+            set -euo pipefail
+            ./gradlew :app:assembleDebug --console=plain --max-workers=2
+            adb install app/build/outputs/apk/debug/app-debug.apk
+            curl -Ls "https://get.maestro.mobile.dev" | bash
+            export PATH="$PATH:$HOME/.maestro/bin"
+            maestro --version
+            maestro test .maestro/flows/first-run-map-to-game.yaml

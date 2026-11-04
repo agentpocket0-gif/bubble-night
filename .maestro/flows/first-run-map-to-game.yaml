@@ -1,0 +1,14 @@
+appId: pt.tiago.bubblenight
+---
+# Fresh install: loading -> Campaign Map -> preparation -> gameplay.
+- launchApp:
+    clearState: true
+- assertVisible: "Easy"
+- assertVisible: "Medium"
+- assertVisible: "Hard"
+- assertVisible: "Level 1, available"
+- tapOn: "Level 1, available"
+- assertVisible: "Objective"
+- assertVisible: "Start level"
+- tapOn: "Start level"
+- assertVisible: "Pause"
