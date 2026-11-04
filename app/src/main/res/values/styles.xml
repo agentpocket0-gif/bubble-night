@@ -2,9 +2,9 @@
     <style name="Theme.BubbleNight" parent="android:style/Theme.Material.NoActionBar">
         <item name="android:fontFamily">sans</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowBackground">#1A1B26</item>
-        <item name="android:colorAccent">#7AA2F7</item>
-        <item name="android:statusBarColor">#1A1B26</item>
-        <item name="android:navigationBarColor">#1A1B26</item>
+        <item name="android:windowBackground">#080B18</item>
+        <item name="android:colorAccent">#62D8F5</item>
+        <item name="android:statusBarColor">#080B18</item>
+        <item name="android:navigationBarColor">#080B18</item>
     </style>
 </resources>
