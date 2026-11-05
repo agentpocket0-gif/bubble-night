@@ -2,16 +2,16 @@
   "schemaVersion": 1,
   "baseId": "level-0013",
   "difficulty": "hard",
-  "levelRevision": 2,
-  "levelSemanticHash": "cd0abb78de6b042c9f3105567ecd2c0eff9e01e2af3c923e740d70ed9d373b67",
+  "levelRevision": 3,
+  "levelSemanticHash": "507489972198b4564c0fa78cc4e846a5b1e0364ba49313bdbea9d2c2b63f60bc",
   "engineVersion": 1,
   "seedHex": "3cd2d0695eb287e9",
-  "initialStateHash": "24c3cb048754a6d25e5e08509ab54e8afce518bf22490709bd9a40d753881c26",
+  "initialStateHash": "478d58d5480d375be41b4626e51804ae4e991e4aa329a44aee44baff16f3baa9",
   "steps": [
     {
       "swapBefore": true,
       "angleMilliDegrees": -9450,
-      "afterStateHash": "4390134a8805c0dbc7897de6f71822c82435488fa9d5f081e465b6f6e20f5437",
+      "afterStateHash": "086b980a0aa00b3d369201b1810435581345ca65e18fa172abd6ad6d65164f72",
       "metrics": {
         "target": {
           "r": 5,
@@ -27,7 +27,7 @@
     {
       "swapBefore": false,
       "angleMilliDegrees": 34700,
-      "afterStateHash": "390f01b9a01315c351e7c2ce17ae688e6db0bd9e7a45325d27a4e999b5b49305",
+      "afterStateHash": "2611dde90bbaf670dce63b37ee01f6dd8db9170775358b8d52866a92c7063e2e",
       "metrics": {
         "target": {
           "r": 0,
@@ -43,7 +43,7 @@
     {
       "swapBefore": true,
       "angleMilliDegrees": 6300,
-      "afterStateHash": "0bae0d15a0970847880cf9f6a2b57f1a6dfc2abee5bdd1b6150bd0529bb43c6f",
+      "afterStateHash": "87acf8af032004f2479f4b6f73c9d801a75eb8bf84d3a3fa245040ce26dbe867",
       "metrics": {
         "target": {
           "r": 0,
@@ -59,7 +59,7 @@
     {
       "swapBefore": false,
       "angleMilliDegrees": 7550,
-      "afterStateHash": "7df75455a696f0934118555124a63521afbf4ce75cf1b7189edac5b5a9f27827",
+      "afterStateHash": "29aedc06fd3a7c7e6b114e202cc45589a04b9957ef02c7bad8e8ec569875b104",
       "metrics": {
         "target": {
           "r": 0,
@@ -73,7 +73,7 @@
       }
     }
   ],
-  "finalStateHash": "7df75455a696f0934118555124a63521afbf4ce75cf1b7189edac5b5a9f27827",
+  "finalStateHash": "29aedc06fd3a7c7e6b114e202cc45589a04b9957ef02c7bad8e8ec569875b104",
   "shotsUsed": 4,
   "score": 3100,
   "rescuedStars": 0,

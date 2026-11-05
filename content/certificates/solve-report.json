@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "1.3.1",
+  "beamWidth": 128,
+  "maxExpandedStatesPerCandidate": 100000,
+  "timeoutMillisPerCandidate": 30000,
+  "variants": [
+    {
+      "baseId": "level-0001",
+      "difficulty": "easy",
+      "status": "reused",
+      "shots": 0,
+      "elapsedMillis": 0
+    },
+    {
+      "baseId": "level-0001",
+      "difficulty": "medium",
+      "status": "reused",
+      "shots": 0,
+      "elapsedMillis": 0
+    },
+    {
+      "baseId": "level-0001",
+      "difficulty": "hard",
+      "status": "reused",
+      "shots": 0,
+      "elapsedMillis": 0
+    }
+  ]
+}

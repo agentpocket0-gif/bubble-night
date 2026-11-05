@@ -9,7 +9,7 @@
   "learningTags": [
     "branch-fall"
   ],
-  "revision": 2,
+  "revision": 3,
   "authorNotes": "Authored candidate; difficulty and teaching intent await replay and human review.",
   "variants": {
     "easy": {
@@ -169,7 +169,7 @@
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 14,
+      "maxShots": 15,
       "threeStarMaxShots": 10,
       "twoStarMaxShots": 12,
       "expectedMetrics": {

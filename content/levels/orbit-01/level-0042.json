@@ -9,7 +9,7 @@
   "learningTags": [
     "anchor-cut"
   ],
-  "revision": 2,
+  "revision": 3,
   "authorNotes": "Authored candidate; difficulty and teaching intent await replay and human review.",
   "variants": {
     "easy": {
@@ -169,7 +169,7 @@
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 14,
+      "maxShots": 16,
       "threeStarMaxShots": 11,
       "twoStarMaxShots": 13,
       "expectedMetrics": {
@@ -262,7 +262,7 @@
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 11,
+      "maxShots": 12,
       "threeStarMaxShots": 9,
       "twoStarMaxShots": 10,
       "expectedMetrics": {
@@ -397,7 +397,7 @@
       "objective": {
         "type": "clear_colors"
       },
-      "maxShots": 9,
+      "maxShots": 10,
       "threeStarMaxShots": 8,
       "twoStarMaxShots": 9,
       "expectedMetrics": {
