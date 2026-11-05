@@ -8,7 +8,7 @@ import pt.tiago.bubblenight.core.model.Difficulty
 class ProfileJsonTest {
     @Test fun historicalBackupsKeepTheirOriginalChecksumAndMigrateAfterVerification() {
         fun fixture(name: String) = javaClass.getResourceAsStream("/backups/$name")!!.use { it.readBytes() }
-        assertEquals(Profile(), ProfileJson.prepareImport(fixture("schema1-before-test-mode.json")))
+        assertEquals(Profile(settings = Settings(lastDifficulty = Difficulty.MEDIUM)), ProfileJson.prepareImport(fixture("schema1-before-test-mode.json")))
         val imported = ProfileJson.prepareImport(fixture("schema1-long-receipts.json"))
         assertEquals(MAX_TURN_RECEIPTS, imported.appliedTurnReceipts.size)
         assertEquals("session|45", imported.appliedTurnReceipts.first())
