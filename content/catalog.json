@@ -84,8 +84,8 @@
       "id": "level-0001",
       "ordinal": 1,
       "path": "content/levels/orbit-01/level-0001.json",
-      "revision": 5,
-      "sha256": "de9eec241157c5394a97146a5bd02e5474fcd5885d5e355220a600244d12e606"
+      "revision": 3,
+      "sha256": "909f6f6ced2abd6eb9a61c3f79846330072ccea76048b74b3b34ee0ec44a56fc"
     },
     {
       "id": "level-0002",
