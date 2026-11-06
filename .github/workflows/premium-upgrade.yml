@@ -59,7 +59,7 @@ jobs:
                   entry["revision"] = level["revision"]
                   entry["sha256"] = digest
                   changed.append(entry["id"])
-          catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+          catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
           print("Synchronized catalogue metadata:", ", ".join(changed) if changed else "no changes")
           PY
           git config user.name "github-actions[bot]"
