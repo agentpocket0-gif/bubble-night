@@ -206,6 +206,7 @@
     <string name="mode_endless">Infinito</string>
     <string name="mode_endless_desc">Avança por ondas e tenta superar o teu recorde.</string>
     <string name="mode_endless_record">Recorde %1$s · %2$s</string>
+    <string name="mode_endless_standard_record">Recorde padrão · %s</string>
     <string name="mode_zen">Zen</string>
     <string name="mode_zen_desc">Joga ao teu ritmo, sem limite de jogadas.</string>
     <string name="mode_zen_session">Sessão disponível</string>

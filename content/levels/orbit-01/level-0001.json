@@ -9,12 +9,18 @@
   "learningTags": [
     "direct-aim"
   ],
-  "revision": 5,
-  "authorNotes": "Dense two-color opening formation tuned for a clear tutorial; certificates are regenerated and replay-verified by CI.",
+  "revision": 3,
+  "authorNotes": "Standard opening board refreshed to a dense, five-row bubble field. All three legacy variants share this layout so the player sees one consistent campaign experience; certificate replay is required after this edit.",
   "variants": {
     "easy": {
       "seedHex": "de0798c2e2b49078",
       "board": [
+        {
+          "r": 0,
+          "c": 0,
+          "kind": "color",
+          "color": "blue"
+        },
         {
           "r": 0,
           "c": 1,
@@ -37,17 +43,35 @@
           "r": 0,
           "c": 4,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 5,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 6,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 0,
+          "c": 7,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 0,
+          "c": 8,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 1,
+          "c": 0,
           "kind": "color",
           "color": "purple"
         },
@@ -55,13 +79,25 @@
           "r": 1,
           "c": 1,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 2,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
+        },
+        {
+          "r": 1,
+          "c": 3,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 1,
+          "c": 4,
+          "kind": "color",
+          "color": "purple"
         },
         {
           "r": 1,
@@ -74,6 +110,24 @@
           "c": 6,
           "kind": "color",
           "color": "purple"
+        },
+        {
+          "r": 1,
+          "c": 7,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "kind": "color",
+          "color": "blue"
         },
         {
           "r": 2,
@@ -89,15 +143,135 @@
         },
         {
           "r": 2,
+          "c": 4,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
           "c": 5,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 2,
           "c": 6,
           "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
+          "c": 7,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
+          "c": 8,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "kind": "color",
           "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 3,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 4,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 5,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 6,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 7,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 3,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 4,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 5,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 6,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 7,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 8,
+          "kind": "color",
+          "color": "blue"
         }
       ],
       "objective": {
@@ -142,49 +316,55 @@
           "r": 0,
           "c": 4,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 5,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 6,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 7,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
+        },
+        {
+          "r": 0,
+          "c": 8,
+          "kind": "color",
+          "color": "blue"
         },
         {
           "r": 1,
           "c": 0,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 1,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 2,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 3,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
@@ -212,6 +392,12 @@
         },
         {
           "r": 2,
+          "c": 0,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
           "c": 1,
           "kind": "color",
           "color": "blue"
@@ -224,15 +410,141 @@
         },
         {
           "r": 2,
+          "c": 3,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
+          "c": 4,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
+          "c": 5,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
           "c": 6,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 2,
           "c": 7,
           "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
+          "c": 8,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "kind": "color",
           "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 3,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 4,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 5,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 6,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 7,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 3,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 4,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 5,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 6,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 7,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 8,
+          "kind": "color",
+          "color": "blue"
         }
       ],
       "objective": {
@@ -277,55 +589,55 @@
           "r": 0,
           "c": 4,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 5,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 6,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 7,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 0,
           "c": 8,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 1,
           "c": 0,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 1,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 2,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
           "c": 3,
           "kind": "color",
-          "color": "blue"
+          "color": "purple"
         },
         {
           "r": 1,
@@ -377,27 +689,135 @@
         },
         {
           "r": 2,
+          "c": 4,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 2,
           "c": 5,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 2,
           "c": 6,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 2,
           "c": 7,
           "kind": "color",
-          "color": "purple"
+          "color": "blue"
         },
         {
           "r": 2,
           "c": 8,
           "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "kind": "color",
           "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 3,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 4,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 5,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 6,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 3,
+          "c": 7,
+          "kind": "color",
+          "color": "purple"
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 3,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 4,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 5,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 6,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 7,
+          "kind": "color",
+          "color": "blue"
+        },
+        {
+          "r": 4,
+          "c": 8,
+          "kind": "color",
+          "color": "blue"
         }
       ],
       "objective": {

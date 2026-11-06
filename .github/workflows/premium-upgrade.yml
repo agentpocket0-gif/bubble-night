@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - premium-complete-upgrade
+      - reference-video-upgrade
 
 permissions:
   contents: write
@@ -22,7 +23,7 @@ jobs:
       - name: Check out upgrade branch
         uses: actions/checkout@v4
         with:
-          ref: premium-complete-upgrade
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: Set up JDK 21
@@ -38,6 +39,36 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Sync catalogue hashes for edited level files
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          catalog_path = Path("content/catalog.json")
+          catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+          changed = []
+          for entry in catalog["levels"]:
+              level_path = Path(entry["path"])
+              raw = level_path.read_bytes()
+              level = json.loads(raw)
+              digest = hashlib.sha256(raw).hexdigest()
+              if entry.get("revision") != level.get("revision") or entry.get("sha256") != digest:
+                  entry["revision"] = level["revision"]
+                  entry["sha256"] = digest
+                  changed.append(entry["id"])
+          catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
+          print("Synchronized catalogue metadata:", ", ".join(changed) if changed else "no changes")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/catalog.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync edited level catalogue hashes [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
 
       - name: Solve expanded Level 1 and write real certificates
         run: |
@@ -74,7 +105,7 @@ jobs:
           git add content/catalog.json content/levels/orbit-01 content/certificates
           if ! git diff --cached --quiet; then
             git commit -m "Certify expanded opening level [skip ci]"
-            git push origin HEAD:premium-complete-upgrade
+            git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
       - name: Upload premium debug APK

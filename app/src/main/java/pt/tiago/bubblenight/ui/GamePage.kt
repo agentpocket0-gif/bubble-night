@@ -104,22 +104,22 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 private val BoardColors = mapOf(
-    UiBubbleColor.BLUE to Color(0xFF58BDF5), UiBubbleColor.PURPLE to Color(0xFFB18CFF),
-    UiBubbleColor.GREEN to Color(0xFF76E0B5), UiBubbleColor.ORANGE to Color(0xFFFFC46B),
-    UiBubbleColor.PINK to Color(0xFFFF79B7), UiBubbleColor.CYAN to Color(0xFF5CE1E6),
+    UiBubbleColor.BLUE to Color(0xFF176FE5), UiBubbleColor.PURPLE to Color(0xFF9B42E8),
+    UiBubbleColor.GREEN to Color(0xFF19B85C), UiBubbleColor.ORANGE to Color(0xFFFF9C24),
+    UiBubbleColor.PINK to Color(0xFFE532A0), UiBubbleColor.CYAN to Color(0xFF11B8C9),
 )
-private val BoardBg = Color(0xFF080B18)
-private val BoardLine = Color(0xFF344365)
-private val BoardText = Color(0xFFC9D8F2)
-private val BoardStrong = Color(0xFFF5F7FF)
-private val BoardMuted = Color(0xFF8191B5)
-private val BoardAccent = Color(0xFF62D8F5)
-private val BoardPurple = Color(0xFFB18CFF)
-private val BoardPink = Color(0xFFFF79B7)
-private val BoardOrange = Color(0xFFFFC46B)
-private val BoardSurface = Color(0xFF121A30)
-private val BoardRaised = Color(0xFF1B2742)
-private val BoardOnAccent = Color(0xFF071321)
+private val BoardBg = Color(0xFFDDF3FF)
+private val BoardLine = Color(0xFF8DBDDA)
+private val BoardText = Color(0xFF315873)
+private val BoardStrong = Color(0xFF173B56)
+private val BoardMuted = Color(0xFF5B7B95)
+private val BoardAccent = Color(0xFF1478D8)
+private val BoardPurple = Color(0xFF8549D9)
+private val BoardPink = Color(0xFFD63F8C)
+private val BoardOrange = Color(0xFFFF941F)
+private val BoardSurface = Color(0xFFF4FAFF)
+private val BoardRaised = Color(0xFFDCEFFF)
+private val BoardOnAccent = Color(0xFFFFFFFF)
 private val BoardFont = FontFamily(Font(R.font.figtree))
 private val BoardDisplayFont = FontFamily(Font(R.font.bricolage_grotesque))
 
@@ -512,7 +512,7 @@ private fun DrawScope.drawNightBoard(
     fun center(bubble: UiBubble) = Offset((1f + bubble.column * 2f + if (bubble.row % 2 == 1) 1f else 0f) * unitX, (1f + bubble.row * kotlin.math.sqrt(3f)) * unitY)
 
     drawRoundRect(
-        Brush.linearGradient(listOf(Color(0xFF0A1125), Color(0xFF151B38), Color(0xFF0A1024)), start = Offset.Zero, end = Offset(size.width, size.height)),
+        Brush.linearGradient(listOf(Color(0xFFDDF4FF), Color(0xFFAADEFA), Color(0xFFF0FAFF)), start = Offset.Zero, end = Offset(size.width, size.height)),
         topLeft = Offset(0f, 0f),
         size = size,
         cornerRadius = androidx.compose.ui.geometry.CornerRadius(size.width * .1f),
@@ -546,7 +546,7 @@ private fun DrawScope.drawNightBoard(
         lineTo(size.width * .69f, size.height * .94f); lineTo(size.width * .83f, size.height * .84f); lineTo(size.width, size.height * .91f)
         lineTo(size.width, size.height); lineTo(0f, size.height); close()
     }
-    drawPath(mountains, Color(0xFF171B2D).copy(alpha = .82f))
+    drawPath(mountains, Color(0xFFB9DFF3).copy(alpha = .78f))
 
     val dangerY = game.dangerLine.coerceIn(1, 31) * unitY
     val dashes = size.width / (unitX * .8f).coerceAtLeast(1f)
@@ -597,8 +597,8 @@ private fun DrawScope.drawNightBoard(
     } else if (event == null && preview.points.size > 1 && preview.valid) {
         val pts = preview.points.map(::px)
         for (i in 0 until pts.lastIndex) {
-            val alpha = if (i % 2 == 0) .75f else .5f
-            drawLine(BoardAccent.copy(alpha = alpha), pts[i], pts[i + 1], 1.3.dp.toPx(), cap = StrokeCap.Round)
+            // A bright dotted path reads clearly against the sky board.
+            drawCircle(BoardOrange.copy(alpha = if (i % 2 == 0) .94f else .72f), unitX * .075f, pts[i])
         }
         preview.destination?.let { d -> drawCircle(BoardAccent.copy(alpha = .35f), unitX * 1.15f, px(d), style = Stroke(width = 1.dp.toPx())) }
     } else if (event == null && preview.destination != null && !preview.valid) {
@@ -679,7 +679,7 @@ internal fun DrawScope.drawSatinBubble(center: Offset, radius: Float, bubble: Ui
     }
     val fill = if (bubble.kind == UiBubbleKind.STAR) Color(0xFF30264F) else BoardColors[bubble.color] ?: BoardAccent
     // Soft contact shadow gives each bubble separation from the board.
-    drawCircle(Color.Black.copy(alpha = .42f * alpha), radius * 1.08f, Offset(center.x, center.y + radius * .12f))
+    drawCircle(Color(0xFF315D7B).copy(alpha = .25f * alpha), radius * 1.04f, Offset(center.x, center.y + radius * .12f))
     // Multi-stop radial lighting creates a glossy, glass-like sphere without a 3D engine.
     drawCircle(
         Brush.radialGradient(
