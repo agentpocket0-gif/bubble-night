@@ -207,6 +207,7 @@
     <string name="mode_endless">Endless</string>
     <string name="mode_endless_desc">Advance through waves and try to beat your record.</string>
     <string name="mode_endless_record">Record %1$s · %2$s</string>
+    <string name="mode_endless_standard_record">Standard record · %s</string>
     <string name="mode_zen">Zen</string>
     <string name="mode_zen_desc">Play at your own pace, with no shot limit.</string>
     <string name="mode_zen_session">Session available</string>
