@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - premium-complete-upgrade
+      - reference-video-upgrade
 
 permissions:
   contents: write
@@ -22,7 +23,7 @@ jobs:
       - name: Check out upgrade branch
         uses: actions/checkout@v4
         with:
-          ref: premium-complete-upgrade
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: Set up JDK 21
@@ -74,7 +75,7 @@ jobs:
           git add content/catalog.json content/levels/orbit-01 content/certificates
           if ! git diff --cached --quiet; then
             git commit -m "Certify expanded opening level [skip ci]"
-            git push origin HEAD:premium-complete-upgrade
+            git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
       - name: Upload premium debug APK
