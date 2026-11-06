@@ -1,5 +1,7 @@
 package pt.tiago.bubblenight.ui
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -54,7 +56,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -73,25 +77,26 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
+/** Screen palette; all values come from [Palette] so the app and the board agree. */
 private object NightPalette {
-    val background = Color(0xFF1A1B26)
-    val surface = Color(0xFF24283B)
-    val raised = Color(0xFF292E42)
-    val text = Color(0xFFC0CAF5)
-    val strong = Color(0xFFE2E8FF)
-    val muted = Color(0xFF8C94BE)
-    val accent = Color(0xFF7AA2F7)
-    val purple = Color(0xFFBB9AF7)
-    val green = Color(0xFF9ECE6A)
-    val orange = Color(0xFFFF9E64)
-    val pink = Color(0xFFF7768E)
-    val cyan = Color(0xFF7DCFFF)
-    val line = Color(0xFF414868)
-    val onAccent = Color(0xFF16161E)
+    val background = Palette.space
+    val surface = Palette.panelTop
+    val raised = Palette.raised
+    val text = Palette.text
+    val strong = Palette.strong
+    val muted = Palette.muted
+    val accent = Palette.violet
+    val purple = Palette.violetLight
+    val green = Palette.mint
+    val orange = Palette.gold
+    val pink = Palette.rose
+    val cyan = Palette.cyan
+    val line = Palette.line
+    val onAccent = Palette.onAccent
 }
 
-private val FigTree = FontFamily(Font(R.font.figtree))
-private val Bricolage = FontFamily(Font(R.font.bricolage_grotesque))
+private val FigTree = BodyFont
+private val Bricolage = DisplayFont
 
 /** Compose entry point; the host owns navigation, storage and all game rules. */
 @Composable
@@ -107,14 +112,19 @@ fun BubbleNightApp(
         typography = Typography(bodyLarge = BodyStyle, bodyMedium = BodyStyle, bodySmall = LabelStyle,
             titleLarge = TitleStyle, titleMedium = CardTitleStyle, labelLarge = BodyStyle),
     ) {
-        Box(Modifier.fillMaxSize().background(NightPalette.background)) {
-            NightBackdrop(Modifier.fillMaxSize(), model.orbitNumber)
+        Box(Modifier.fillMaxSize().background(Palette.space)) {
+            CosmicBackdrop(model.orbitNumber, model.reducedMotion)
             Box(
                 modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),
                 contentAlignment = Alignment.TopCenter,
             ) {
                 val pageModifier = Modifier.widthIn(max = 520.dp).fillMaxSize()
-                when (model.screen) {
+                Crossfade(
+                    targetState = model.screen,
+                    animationSpec = tween(durationMillis = if (model.reducedMotion) 0 else 220),
+                    label = "screen",
+                ) { screen ->
+                when (screen) {
                     UiScreen.START -> StartPage(model, callbacks, pageModifier)
                     UiScreen.MAP -> MapPage(model, callbacks, pageModifier)
                     UiScreen.PREPARATION -> PreparationPage(model, callbacks, pageModifier)
@@ -126,6 +136,7 @@ fun BubbleNightApp(
                     UiScreen.CREDITS -> CreditsPage(model, callbacks, pageModifier)
                     UiScreen.DAILY -> DailyPage(model, callbacks, pageModifier)
                     UiScreen.ZEN_SELECT -> ZenSelectionPage(model, callbacks, pageModifier)
+                }
                 }
             }
             model.loadingMessage?.let { LoadingOverlay(it) }
@@ -152,28 +163,10 @@ fun BubbleNightApp(
     }
 }
 
-private val TitleStyle = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.SemiBold, color = NightPalette.strong, fontSize = 25.sp, lineHeight = 31.sp)
-private val CardTitleStyle = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.SemiBold, color = NightPalette.strong, fontSize = 20.sp, lineHeight = 26.sp)
-private val BodyStyle = TextStyle(fontFamily = FigTree, fontWeight = FontWeight.Normal, color = NightPalette.text, fontSize = 16.sp, lineHeight = 22.sp)
-private val LabelStyle = TextStyle(fontFamily = FigTree, fontWeight = FontWeight.Medium, color = NightPalette.muted, fontSize = 13.sp, lineHeight = 18.sp)
-
-@Composable
-private fun NightBackdrop(modifier: Modifier = Modifier, orbitNumber: Int = 1) {
-    // The sky is shared; the planet, rings, moons and skyline are the orbit's own vector illustration.
-    Canvas(modifier) {
-        val w = size.width
-        val h = size.height
-        val randomStars = listOf(
-            .08f to .08f, .81f to .12f, .93f to .28f, .15f to .32f, .74f to .43f,
-            .06f to .58f, .88f to .66f, .31f to .72f, .95f to .84f, .12f to .9f,
-        )
-        randomStars.forEachIndexed { index, (x, y) ->
-            val radius = if (index % 3 == 0) 1.8f else 1.1f
-            drawCircle(if (index % 4 == 0) NightPalette.purple.copy(alpha = .75f) else NightPalette.text.copy(alpha = .4f), radius, Offset(w * x, h * y))
-        }
-        drawOrbitArt(orbitArt(orbitNumber))
-    }
-}
+private val TitleStyle = Type.title
+private val CardTitleStyle = Type.cardTitle
+private val BodyStyle = Type.body
+private val LabelStyle = Type.label
 
 @Composable
 private fun StartPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier) {
@@ -183,19 +176,18 @@ private fun StartPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier
     ) {
         Row(Modifier.fillMaxWidth().heightIn(min = 112.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("Bubble", style = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.Bold, color = NightPalette.strong, fontSize = 38.sp, lineHeight = 40.sp))
-                Text("Night", style = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.Bold, color = NightPalette.purple, fontSize = 38.sp, lineHeight = 40.sp))
+                Text("Bubble", style = Type.display.copy(fontSize = 40.sp, lineHeight = 42.sp))
+                Text("Night", style = Type.display.copy(fontSize = 40.sp, lineHeight = 42.sp, color = Palette.violetLight))
                 Text(stringResource(R.string.home_tagline), style = LabelStyle)
             }
             MiniPlanet(Modifier.size(112.dp))
         }
 
         val openMapLabel = stringResource(R.string.cd_open_orbit_map, model.currentOrbitName)
-        Surface(
+        GlassPanel(
             modifier = Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = callbacks::onOpenMap)
                 .semantics { contentDescription = openMapLabel },
-            shape = RoundedCornerShape(22.dp), color = NightPalette.surface.copy(alpha = .94f),
-            border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line.copy(alpha = .8f)),
+            shape = RoundedCornerShape(24.dp), accent = Palette.violetLight, glow = true,
         ) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.home_campaign), style = LabelStyle.copy(color = NightPalette.purple, letterSpacing = 2.sp))
@@ -284,17 +276,16 @@ private fun NodeDot(node: UiLevelNode, size: androidx.compose.ui.unit.Dp) {
         UiLevelNode.NodeState.LOCKED -> Triple(NightPalette.raised, NightPalette.line, NightPalette.muted)
         UiLevelNode.NodeState.COMPLETED -> Triple(NightPalette.surface, NightPalette.purple, NightPalette.text)
     }
-    Box(Modifier.size(size).clip(CircleShape).background(fill).border(1.5.dp, stroke, CircleShape), contentAlignment = Alignment.Center) {
+    Box(Modifier.size(size).clip(CircleShape).background(Brush.verticalGradient(listOf(lerp(fill, Color.White, .35f), fill))).border(1.5.dp, stroke, CircleShape), contentAlignment = Alignment.Center) {
         Text(node.number.toString(), style = TextStyle(fontFamily = FigTree, fontWeight = FontWeight.SemiBold, color = text, fontSize = if (size < 38.dp) 12.sp else 14.sp))
     }
 }
 
 @Composable
 private fun MenuRow(title: String, subtitle: String, glyph: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(
+    GlassPanel(
         modifier = modifier.heightIn(min = 78.dp).clickable(role = Role.Button, onClick = onClick),
-        shape = RoundedCornerShape(18.dp), color = NightPalette.surface.copy(alpha = .96f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line.copy(alpha = .78f)),
+        shape = RoundedCornerShape(20.dp),
     ) {
         Row(Modifier.padding(horizontal = 14.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(glyph, color = NightPalette.purple, fontSize = 25.sp)
@@ -309,14 +300,7 @@ private fun MenuRow(title: String, subtitle: String, glyph: String, onClick: () 
 
 @Composable
 private fun PrimaryButton(label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(modifier.fillMaxWidth().heightIn(min = 56.dp).clickable(role = Role.Button, onClick = onClick), shape = RoundedCornerShape(16.dp), color = NightPalette.accent) {
-        Box(contentAlignment = Alignment.Center) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(label, style = TextStyle(fontFamily = FigTree, fontWeight = FontWeight.SemiBold, color = NightPalette.onAccent, fontSize = 17.sp, lineHeight = 22.sp))
-                Text("›", color = NightPalette.onAccent, fontSize = 23.sp)
-            }
-        }
-    }
+    GlossyButton(label, onClick, modifier.fillMaxWidth(), accent = Palette.violet)
 }
 
 @Composable
@@ -330,9 +314,7 @@ private fun TextButtonLine(label: String, onClick: () -> Unit, modifier: Modifie
 private fun PageHeader(title: String, onBack: () -> Unit, trailing: (@Composable () -> Unit)? = null) {
     Row(Modifier.fillMaxWidth().heightIn(min = 56.dp), verticalAlignment = Alignment.CenterVertically) {
         val backLabel = stringResource(R.string.cd_back)
-        Box(Modifier.size(48.dp).clip(CircleShape).clickable(role = Role.Button, onClick = onBack), contentAlignment = Alignment.Center) {
-            Text("‹", color = NightPalette.text, fontSize = 32.sp, modifier = Modifier.semantics { contentDescription = backLabel })
-        }
+        GlassIconButton("‹", backLabel, onBack, accent = Palette.cyan, diameter = 40.dp)
         Text(title, style = TitleStyle, modifier = Modifier.weight(1f), maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
         trailing?.invoke()
     }
@@ -377,25 +359,13 @@ private fun MapPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier) 
     }
 }
 
+/**
+ * The campaign is one continuous run of 600 levels, so the Easy/Medium/Hard picker is gone.
+ * Every level keeps the board and shot budget of the certificate it ships with.
+ */
 @Composable
 private fun DifficultyPicker(selected: UiDifficulty, onSelected: (UiDifficulty) -> Unit, showSummary: Boolean = true) {
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(NightPalette.surface).padding(4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            UiDifficulty.entries.forEach { difficulty ->
-                val active = selected == difficulty
-                val color = difficultyColor(difficulty)
-                val label = stringResource(difficulty.label)
-                val description = stringResource(if (active) R.string.cd_difficulty_selected else R.string.cd_difficulty, label)
-                Box(Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
-                    .background(if (active) color.copy(alpha = .18f) else Color.Transparent)
-                    .border(1.dp, if (active) color.copy(alpha = .7f) else Color.Transparent, RoundedCornerShape(12.dp))
-                    .clickable(role = Role.RadioButton, onClick = { onSelected(difficulty) }).semantics { contentDescription = description }, contentAlignment = Alignment.Center) {
-                    Text(label, style = BodyStyle.copy(color = if (active) color else NightPalette.muted, fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal))
-                }
-            }
-        }
-        if (showSummary) Text(stringResource(R.string.difficulty_summary_with_points, stringResource(selected.summary), stringResource(selected.scoreFactor)), style = LabelStyle, modifier = Modifier.padding(horizontal = 6.dp))
-    }
+    selected.hashCode(); onSelected.hashCode(); showSummary.hashCode()
 }
 
 @Composable
@@ -431,9 +401,7 @@ private fun MapNodeRow(node: UiLevelNode, index: Int, onSelect: () -> Unit) {
 
 @Composable
 private fun SmallAction(symbol: String, label: String, onClick: () -> Unit) {
-    Box(Modifier.size(48.dp).clip(CircleShape).clickable(role = Role.Button, onClick = onClick).semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
-        Text(symbol, color = NightPalette.text, fontSize = 26.sp)
-    }
+    GlassIconButton(symbol, label, onClick, accent = Palette.violetLight, diameter = 36.dp)
 }
 
 @Composable
@@ -446,7 +414,7 @@ private fun PreparationPage(model: UiModel, callbacks: UiCallbacks, modifier: Mo
             Text(prep?.title ?: stringResource(R.string.prep_ready), style = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.Bold, color = NightPalette.strong, fontSize = 30.sp, lineHeight = 36.sp))
             Text(prep?.objective ?: stringResource(R.string.prep_default_objective), style = BodyStyle)
         }
-        Surface(shape = RoundedCornerShape(22.dp), color = NightPalette.surface.copy(alpha = .96f), border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line)) {
+        GlassPanel(shape = RoundedCornerShape(22.dp)) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
@@ -488,7 +456,7 @@ private fun PreparationPage(model: UiModel, callbacks: UiCallbacks, modifier: Mo
             }
         }
         if (!prep?.newTips.isNullOrEmpty()) {
-            Surface(shape = RoundedCornerShape(22.dp), color = NightPalette.surface.copy(alpha = .96f), border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.orange.copy(alpha = .7f))) {
+            GlassPanel(shape = RoundedCornerShape(22.dp), accent = Palette.gold) {
                 Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     Text(stringResource(R.string.prep_new), style = LabelStyle.copy(color = NightPalette.orange, letterSpacing = 2.sp, fontWeight = FontWeight.SemiBold))
                     prep!!.newTips.forEach { TipRow(it) }
@@ -539,10 +507,9 @@ private fun FreeModePage(model: UiModel, callbacks: UiCallbacks, modifier: Modif
 
 @Composable
 private fun ModeCard(title: String, description: String, detail: String, glyph: String, onClick: () -> Unit) {
-    Surface(
+    GlassPanel(
         Modifier.fillMaxWidth().heightIn(min = 116.dp).clickable(role = Role.Button, onClick = onClick),
-        shape = RoundedCornerShape(20.dp), color = NightPalette.surface,
-        border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line),
+        shape = RoundedCornerShape(20.dp),
     ) {
         Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.size(54.dp).clip(CircleShape).background(NightPalette.raised), contentAlignment = Alignment.Center) {
@@ -567,7 +534,7 @@ private fun DailyPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier
         Text(date, style = TitleStyle.copy(color = NightPalette.purple))
         Text(stringResource(R.string.daily_intro), style = BodyStyle)
         DifficultyPicker(model.difficulty, callbacks::onDifficultyChanged)
-        Surface(shape = RoundedCornerShape(20.dp), color = NightPalette.surface) {
+        GlassPanel(shape = RoundedCornerShape(20.dp)) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(stringResource(R.string.daily_today, model.dailyLevelNumber), style = CardTitleStyle)
                 val stars = model.dailyBestStars[model.difficulty] ?: 0
@@ -677,7 +644,10 @@ private fun settingLabel(setting: UiSetting): Int = when (setting) {
 
 @Composable
 private fun SettingRow(label: String, enabled: Boolean, onChange: (Boolean) -> Unit) {
-    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(NightPalette.surface).padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
+        .background(Brush.verticalGradient(listOf(Palette.panelTop, Palette.panelBottom)))
+        .border(1.dp, Palette.lineSoft, RoundedCornerShape(16.dp))
+        .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(label, style = BodyStyle, modifier = Modifier.weight(1f))
         Switch(checked = enabled, onCheckedChange = onChange)
     }
@@ -720,10 +690,9 @@ private fun StatisticsPage(model: UiModel, callbacks: UiCallbacks, modifier: Mod
 private fun AchievementRow(achievement: UiAchievement) {
     val description = stringResource(if (achievement.unlocked) R.string.cd_achievement_unlocked else R.string.cd_achievement_locked,
         achievement.title, achievement.description)
-    Surface(Modifier.fillMaxWidth().semantics(mergeDescendants = true) {
+    GlassPanel(Modifier.fillMaxWidth().semantics(mergeDescendants = true) {
         contentDescription = description
-    }, shape = RoundedCornerShape(16.dp), color = NightPalette.surface,
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (achievement.unlocked) NightPalette.orange.copy(alpha = .6f) else NightPalette.line)) {
+    }, shape = RoundedCornerShape(16.dp), accent = if (achievement.unlocked) Palette.gold else Palette.line) {
         Row(Modifier.padding(horizontal = 14.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StarMeter(if (achievement.unlocked) 1 else 0, size = 18.dp, count = 1)
             Column(Modifier.weight(1f)) {
@@ -736,7 +705,7 @@ private fun AchievementRow(achievement: UiAchievement) {
 
 @Composable
 private fun StatTile(title: String, value: String, modifier: Modifier = Modifier) {
-    Surface(modifier, shape = RoundedCornerShape(18.dp), color = NightPalette.surface, border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line)) {
+    GlassPanel(modifier, shape = RoundedCornerShape(18.dp)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
             Text(title, style = LabelStyle)
             Text(value, style = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.Bold, color = NightPalette.strong, fontSize = 25.sp, lineHeight = 31.sp))
@@ -748,7 +717,7 @@ private fun StatTile(title: String, value: String, modifier: Modifier = Modifier
 private fun CreditsPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier) {
     Column(modifier.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
         PageHeader(stringResource(R.string.menu_credits), callbacks::onBack)
-        Surface(shape = RoundedCornerShape(22.dp), color = NightPalette.surface, border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line)) {
+        GlassPanel(shape = RoundedCornerShape(22.dp), accent = Palette.violetLight) {
             Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Text(stringResource(R.string.app_name), style = CardTitleStyle)
                 Text(stringResource(R.string.credits_description), style = BodyStyle)
@@ -775,7 +744,7 @@ private fun EmptyState(title: String, message: String) {
 private fun LoadingOverlay(message: String) {
     // Drawn in the same window: a Dialog steals focus and makes short waits flicker.
     Box(Modifier.fillMaxSize().background(NightPalette.background.copy(alpha = .55f)).clickable(enabled = false) {}, contentAlignment = Alignment.Center) {
-        Surface(shape = RoundedCornerShape(22.dp), color = NightPalette.surface, border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line)) {
+        GlassPanel(shape = RoundedCornerShape(22.dp), accent = Palette.violetLight) {
             Row(Modifier.padding(horizontal = 22.dp, vertical = 18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 CircularProgressIndicator(Modifier.size(24.dp), color = NightPalette.accent, strokeWidth = 2.dp)
                 Text(message, style = BodyStyle)
@@ -787,7 +756,7 @@ private fun LoadingOverlay(message: String) {
 @Composable
 private fun ErrorBanner(message: String, callbacks: UiCallbacks, canRetryLoad: Boolean, canRetrySave: Boolean) {
     Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing), contentAlignment = Alignment.TopCenter) {
-        Surface(Modifier.fillMaxWidth().padding(16.dp), shape = RoundedCornerShape(16.dp), color = NightPalette.surface, border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.pink.copy(alpha = .75f))) {
+        GlassPanel(Modifier.fillMaxWidth().padding(16.dp), shape = RoundedCornerShape(16.dp), accent = Palette.rose) {
             Column(Modifier.padding(16.dp)) {
                 Text(message, style = BodyStyle.copy(color = NightPalette.strong))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {

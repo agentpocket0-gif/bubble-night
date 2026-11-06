@@ -8,6 +8,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.dp
 import kotlin.math.cos
 import kotlin.math.sin
@@ -55,101 +57,216 @@ internal fun orbitArt(orbit: Int): OrbitArt = when (orbit.coerceIn(1, 12)) {
     else -> OrbitArt(Orange, Color(0xFF4E2C24), Gold, OrbitFeature.RING, 40f, 4, 2.2f)                // Last Constellation
 }
 
-/** Draws the orbit's planet, feature, moons and mountains over the sky. */
-internal fun DrawScope.drawOrbitArt(art: OrbitArt) {
+/**
+ * Draws the orbit's planet, its feature, moons and the layered skyline over the sky.
+ *
+ * [drift] runs 0..1 from the backdrop animation: the planet and the ridges move by a few pixels,
+ * which is enough parallax to sell depth without ever moving anything the player interacts with.
+ */
+internal fun DrawScope.drawOrbitArt(art: OrbitArt, drift: Float = 0f) {
     val w = size.width
     val h = size.height
     val horizon = art.feature == OrbitFeature.HORIZON
-    val center = if (horizon) Offset(w * .5f, h * .8f) else Offset(w * .83f, h * .17f)
-    val r = if (horizon) w * .32f else w * .105f
+    val center = if (horizon) Offset(w * .5f, h * .84f + drift * h * .006f) else Offset(w * .84f - drift * w * .012f, h * .17f + drift * h * .01f)
+    val r = if (horizon) w * .34f else w * .108f
 
-    // Halo, then the planet body with a soft light from the upper left.
-    drawCircle(art.accent.copy(alpha = .12f), r * 1.8f, center)
+    drawCircle(art.accent.copy(alpha = .09f), r * 2.6f, center)
     drawCircle(
-        Brush.radialGradient(listOf(art.planetLight, art.planetDark), center = center - Offset(r * .35f, r * .35f), radius = r * 1.4f),
-        r, center,
+        Brush.radialGradient(
+            listOf(art.accent.copy(alpha = .26f), Color.Transparent),
+            center = center,
+            radius = r * 1.9f,
+        ),
+        r * 1.9f,
+        center,
+    )
+
+    drawCircle(
+        Brush.radialGradient(
+            0f to lerp(art.planetLight, Color.White, .55f),
+            .42f to art.planetLight,
+            .78f to lerp(art.planetLight, art.planetDark, .8f),
+            1f to lerp(art.planetDark, Color(0xFF241A52), .45f),
+            center = center - Offset(r * .34f, r * .36f),
+            radius = r * 1.55f,
+        ),
+        r,
+        center,
+    )
+    for (k in 0 until 3) {
+        val bandY = center.y - r * .5f + k * r * .5f
+        drawOval(
+            art.planetDark.copy(alpha = .16f + k * .03f),
+            topLeft = Offset(center.x - r * .92f, bandY),
+            size = Size(r * 1.84f, r * (.12f + k * .04f)),
+        )
+    }
+    drawCircle(
+        Brush.radialGradient(listOf(Color.White.copy(alpha = .38f), Color.Transparent), center = center - Offset(r * .42f, r * .44f), radius = r * .55f),
+        r * .55f,
+        center - Offset(r * .42f, r * .44f),
+    )
+    drawArc(
+        color = lerp(art.planetLight, Color.White, .7f).copy(alpha = .45f),
+        startAngle = 150f, sweepAngle = 120f, useCenter = false,
+        topLeft = Offset(center.x - r * .97f, center.y - r * .97f), size = Size(r * 1.94f, r * 1.94f),
+        style = Stroke(width = r * .06f),
     )
 
     when (art.feature) {
-        OrbitFeature.RING -> ring(art, center, r, 1.6f, .45f)
+        OrbitFeature.RING -> ring(art, center, r, 1.75f, .42f)
         OrbitFeature.ASTEROIDS -> {
-            ring(art, center, r, 1.7f, .42f)
-            for (i in 0 until 9) {
+            ring(art, center, r, 1.8f, .4f)
+            for (i in 0 until 12) {
                 val a = i * 0.7f + 0.3f
-                val p = Offset(center.x + cos(a) * r * 1.7f, center.y + sin(a) * r * .42f)
-                drawCircle(art.accent.copy(alpha = .7f), 1.6f + (i % 3) * .6f, p)
+                val p = Offset(center.x + cos(a) * r * 1.75f, center.y + sin(a) * r * .4f)
+                val stone = 1.2f + (i % 3) * .7f
+                drawCircle(lerp(art.accent, Palette.rockDeep, .3f).copy(alpha = .9f), stone, p)
+                drawCircle(lerp(art.accent, Color.White, .6f).copy(alpha = .6f), stone * .5f, p - Offset(stone * .3f, stone * .3f))
             }
         }
-        OrbitFeature.AURORA -> for (k in 0 until 4) {
-            drawOval(art.accent.copy(alpha = .08f + k * .02f), topLeft = Offset(0f, h * (.04f + k * .035f)), size = Size(w, h * .07f))
+        OrbitFeature.AURORA -> for (k in 0 until 5) {
+            val y = h * (.03f + k * .028f) - drift * h * .004f * k
+            drawOval(
+                Brush.verticalGradient(
+                    listOf(art.accent.copy(alpha = .0f), art.accent.copy(alpha = .16f - k * .018f), Color.Transparent),
+                    startY = y, endY = y + h * .1f,
+                ),
+                topLeft = Offset(0f, y), size = Size(w, h * .1f),
+            )
         }
-        OrbitFeature.CONCENTRIC -> for (k in 1..3) {
-            drawCircle(art.accent.copy(alpha = .28f), r * (1f + k * .32f), center, style = Stroke(width = 1.dp.toPx()))
+        OrbitFeature.CONCENTRIC -> for (k in 1..4) {
+            drawCircle(art.accent.copy(alpha = .3f - k * .045f), r * (1f + k * .3f), center, style = Stroke(width = 1.dp.toPx()))
         }
         OrbitFeature.BRIDGE -> {
             val arc = Path().apply {
-                moveTo(w * .04f, h * .36f)
-                quadraticBezierTo(w * .32f, h * .08f, center.x - r * 1.2f, center.y + r * .6f)
+                moveTo(w * .02f, h * .42f)
+                cubicTo(w * .24f, h * .12f, w * .5f, h * .1f, center.x - r * 1.15f, center.y + r * .55f)
             }
-            drawPath(arc, art.accent.copy(alpha = .45f), style = Stroke(width = 1.dp.toPx()))
+            drawPath(arc, art.accent.copy(alpha = .22f), style = Stroke(width = 4.dp.toPx()))
+            drawPath(arc, art.accent.copy(alpha = .7f), style = Stroke(width = 1.1.dp.toPx()))
+            for (i in 0..5) {
+                val t = i / 5f
+                val x = w * .02f + (center.x - r * 1.15f - w * .02f) * t
+                val y = h * .42f - sin(t * 3.14f) * h * .22f
+                drawCircle(art.accent.copy(alpha = .9f), 1.6f, Offset(x, y))
+            }
         }
-        OrbitFeature.ECHOES -> for (k in 1..3) {
-            drawCircle(art.accent.copy(alpha = .16f), r * (1f + k * .22f), center, style = Stroke(width = 1.dp.toPx()))
+        OrbitFeature.ECHOES -> for (k in 1..4) {
+            drawCircle(art.accent.copy(alpha = .2f - k * .035f), r * (1f + k * .2f), center, style = Stroke(width = .9.dp.toPx()))
         }
         OrbitFeature.NEBULA -> {
-            val blobs = listOf(Offset(w * .62f, h * .3f), Offset(w * .7f, h * .36f), Offset(w * .55f, h * .38f))
-            blobs.forEachIndexed { i, b -> drawCircle(art.accent.copy(alpha = .07f), w * (.09f + i * .02f), b) }
+            val g = Offset(w * .3f, h * .22f)
+            rotate(-28f, g) {
+                drawOval(
+                    Brush.radialGradient(
+                        listOf(art.accent.copy(alpha = .45f), lerp(Palette.violetLight, Color.White, .4f).copy(alpha = .25f), Color.Transparent),
+                        center = g, radius = w * .2f,
+                    ),
+                    topLeft = Offset(g.x - w * .19f, g.y - w * .05f),
+                    size = Size(w * .38f, w * .1f),
+                )
+                drawOval(
+                    lerp(Palette.violetLight, Color.White, .6f).copy(alpha = .4f),
+                    topLeft = Offset(g.x - w * .05f, g.y - w * .018f),
+                    size = Size(w * .1f, w * .036f),
+                )
+            }
         }
-        OrbitFeature.HORIZON -> drawCircle(art.accent.copy(alpha = .10f), r * 1.1f, center)
-        OrbitFeature.CROWN -> drawArc(
-            color = art.accent.copy(alpha = .7f), startAngle = 200f, sweepAngle = 140f, useCenter = false,
-            topLeft = Offset(center.x - r * 1.25f, center.y - r * 1.25f), size = Size(r * 2.5f, r * 2.5f),
-            style = Stroke(width = 2.dp.toPx()),
+        OrbitFeature.HORIZON -> drawCircle(
+            Brush.radialGradient(listOf(art.accent.copy(alpha = .32f), Color.Transparent), center = center, radius = r * 1.5f),
+            r * 1.5f,
+            center,
         )
-        OrbitFeature.STARFIELD -> for (i in 0 until 26) {
+        OrbitFeature.CROWN -> {
+            drawArc(
+                color = art.accent.copy(alpha = .9f), startAngle = 200f, sweepAngle = 140f, useCenter = false,
+                topLeft = Offset(center.x - r * 1.3f, center.y - r * 1.3f), size = Size(r * 2.6f, r * 2.6f),
+                style = Stroke(width = 2.dp.toPx()),
+            )
+            for (i in 0 until 5) {
+                val a = (200f + i * 35f) * kotlin.math.PI.toFloat() / 180f
+                val p = Offset(center.x + cos(a) * r * 1.3f, center.y + sin(a) * r * 1.3f)
+                drawGlowingStar(p, r * .12f, art.accent, .9f)
+            }
+        }
+        OrbitFeature.STARFIELD -> for (i in 0 until 30) {
             val x = ((i * .618f) % 1f) * w
-            val y = ((i * .381f) % 1f) * h * .6f
-            drawCircle(art.accent.copy(alpha = .5f), 1f + (i % 2) * .5f, Offset(x, y))
+            val y = ((i * .381f) % 1f) * h * .62f
+            drawGlowingStar(Offset(x, y), 1.2f + (i % 3) * .5f, art.accent, .8f)
         }
         OrbitFeature.BIG_MOON -> {
-            // Low over the skyline: the top quarter belongs to page headers, whose height varies
-            // with the difficulty summary, so a moon there sat on top of the text.
-            val moon = Offset(w * .17f, h * .74f)
-            drawCircle(art.planetLight.copy(alpha = .6f), w * .07f, moon)
-            drawCircle(art.planetDark.copy(alpha = .5f), w * .018f, moon + Offset(-w * .02f, -w * .01f))
-            drawCircle(art.planetDark.copy(alpha = .4f), w * .011f, moon + Offset(w * .018f, w * .02f))
+            val moon = Offset(w * .17f, h * .74f + drift * h * .004f)
+            val moonR = w * .075f
+            drawCircle(
+                Brush.radialGradient(
+                    listOf(lerp(art.planetLight, Color.White, .45f), art.planetLight, art.planetDark),
+                    center = moon - Offset(moonR * .3f, moonR * .3f), radius = moonR * 1.4f,
+                ),
+                moonR, moon,
+            )
+            drawCircle(Color(0xFF2A1F5E).copy(alpha = .3f), moonR, moon + Offset(moonR * .12f, moonR * .08f))
+            drawCircle(art.planetDark.copy(alpha = .5f), moonR * .24f, moon + Offset(-moonR * .26f, -moonR * .14f))
+            drawCircle(art.planetDark.copy(alpha = .4f), moonR * .15f, moon + Offset(moonR * .24f, moonR * .28f))
+            drawCircle(art.planetDark.copy(alpha = .3f), moonR * .1f, moon + Offset(moonR * .1f, -moonR * .4f))
         }
     }
 
-    // Moons travel a small elliptical path around the planet.
     for (i in 0 until art.moons) {
         val a = 0.6f + i * 1.9f
-        val p = Offset(center.x + cos(a) * r * 1.7f, center.y + sin(a) * r * .65f)
-        drawCircle(art.planetLight.copy(alpha = .9f), r * .14f, p)
+        val p = Offset(center.x + cos(a) * r * 1.75f, center.y + sin(a) * r * .68f)
+        val mr = r * .13f
+        drawCircle(
+            Brush.radialGradient(
+                listOf(lerp(art.planetLight, Color.White, .5f), art.planetLight, lerp(art.planetDark, Color(0xFF241A52), .4f)),
+                center = p - Offset(mr * .35f, mr * .35f), radius = mr * 1.5f,
+            ),
+            mr, p,
+        )
+        drawCircle(art.accent.copy(alpha = .18f), mr * 1.9f, p)
     }
 
-    // Mountains: three harmonics with an orbit-specific phase, so each landscape has its own skyline.
-    val mountains = Path().apply {
-        val s = art.mountainSeed
-        moveTo(0f, h)
-        for (step in 0..24) {
-            val x = w * step / 24f
-            val y = h * (.9f - .035f * sin(3.1f * x / w + s) - .025f * sin(7.3f * x / w + s * 1.7f) - .012f * sin(13f * x / w + s * 2.3f))
-            if (step == 0) lineTo(0f, y) else lineTo(x, y)
+    ridges(w, h, art.mountainSeed, drift)
+}
+
+/** Three parallax ridges with their own height, phase and tint. */
+private fun DrawScope.ridges(w: Float, h: Float, seed: Float, drift: Float) {
+    val layers = listOf(
+        Triple(0.885f, Color(0xFF4A3A94).copy(alpha = .45f), 0.6f),
+        Triple(0.915f, Color(0xFF3B2C79).copy(alpha = .7f), 1.2f),
+        Triple(0.95f, Color(0xFF2B1F5E).copy(alpha = .9f), 2.2f),
+    )
+    layers.forEachIndexed { index, (baseLine, tint, amp) ->
+        val path = Path().apply {
+            moveTo(-w * .05f, h)
+            for (step in 0..28) {
+                val x = w * step / 28f
+                val y = h * (baseLine - .03f * amp * sin(3.1f * x / w + seed + index) - .02f * amp * sin(7.3f * x / w + seed * 1.7f + index * 2f))
+                if (step == 0) lineTo(-w * .05f, y) else lineTo(x, y)
+            }
+            lineTo(w * 1.05f, h)
+            close()
         }
-        lineTo(w, h)
-        close()
+        translate(0f, drift * (index + 1) * h * .002f) { drawPath(path, tint) }
     }
-    drawPath(mountains, Color(0xFF171B2D).copy(alpha = .8f))
 }
 
 private fun DrawScope.ring(art: OrbitArt, center: Offset, r: Float, rx: Float, ry: Float) {
     rotate(art.tiltDegrees, center) {
         drawOval(
-            art.accent.copy(alpha = .55f),
+            Brush.linearGradient(
+                listOf(Color.Transparent, art.accent.copy(alpha = .22f), art.accent.copy(alpha = .6f), art.accent.copy(alpha = .22f), Color.Transparent),
+                start = Offset(center.x - r * rx, center.y), end = Offset(center.x + r * rx, center.y),
+            ),
             topLeft = Offset(center.x - r * rx, center.y - r * ry),
             size = Size(r * rx * 2f, r * ry * 2f),
-            style = Stroke(width = 1.5.dp.toPx()),
+            style = Stroke(width = 3.5.dp.toPx()),
+        )
+        drawOval(
+            art.accent.copy(alpha = .4f),
+            topLeft = Offset(center.x - r * rx * 1.06f, center.y - r * ry * 1.06f),
+            size = Size(r * rx * 2.12f, r * ry * 2.12f),
+            style = Stroke(width = 1.dp.toPx()),
         )
     }
 }

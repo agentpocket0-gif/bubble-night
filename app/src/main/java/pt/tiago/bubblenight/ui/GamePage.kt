@@ -1,6 +1,9 @@
 package pt.tiago.bubblenight.ui
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -103,25 +106,25 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
-private val BoardColors = mapOf(
-    UiBubbleColor.BLUE to Color(0xFF7AA2F7), UiBubbleColor.PURPLE to Color(0xFFBB9AF7),
-    UiBubbleColor.GREEN to Color(0xFF9ECE6A), UiBubbleColor.ORANGE to Color(0xFFFF9E64),
-    UiBubbleColor.PINK to Color(0xFFF7768E), UiBubbleColor.CYAN to Color(0xFF7DCFFF),
+private val BoardColors: Map<UiBubbleColor, Color> = mapOf(
+    UiBubbleColor.BLUE to Palette.bubbleBlue, UiBubbleColor.PURPLE to Palette.bubblePurple,
+    UiBubbleColor.GREEN to Palette.bubbleGreen, UiBubbleColor.ORANGE to Palette.bubbleOrange,
+    UiBubbleColor.PINK to Palette.bubblePink, UiBubbleColor.CYAN to Palette.bubbleCyan,
 )
-private val BoardBg = Color(0xFF1A1B26)
-private val BoardLine = Color(0xFF414868)
-private val BoardText = Color(0xFFC0CAF5)
-private val BoardStrong = Color(0xFFE2E8FF)
-private val BoardMuted = Color(0xFF8C94BE)
-private val BoardAccent = Color(0xFF7AA2F7)
-private val BoardPurple = Color(0xFFBB9AF7)
-private val BoardPink = Color(0xFFF7768E)
-private val BoardOrange = Color(0xFFFF9E64)
-private val BoardSurface = Color(0xFF24283B)
-private val BoardRaised = Color(0xFF292E42)
-private val BoardOnAccent = Color(0xFF16161E)
-private val BoardFont = FontFamily(Font(R.font.figtree))
-private val BoardDisplayFont = FontFamily(Font(R.font.bricolage_grotesque))
+private val BoardBg = Palette.space
+private val BoardLine = Palette.line
+private val BoardText = Palette.text
+private val BoardStrong = Palette.strong
+private val BoardMuted = Palette.muted
+private val BoardAccent = Palette.cyan
+private val BoardPurple = Palette.violetLight
+private val BoardPink = Palette.rose
+private val BoardOrange = Palette.gold
+private val BoardSurface = Palette.panelTop
+private val BoardRaised = Palette.raised
+private val BoardOnAccent = Palette.onAccent
+private val BoardFont = BodyFont
+private val BoardDisplayFont = DisplayFont
 
 @Composable
 internal fun GamePage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier = Modifier) {
@@ -226,10 +229,10 @@ private fun GameHud(game: UiGame, isFree: Boolean, model: UiModel, callbacks: Ui
             Text("☷", style = HudTitle)
         }
     }
-    Surface(
+    GlassPanel(
         Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp),
-        shape = RoundedCornerShape(16.dp), color = BoardSurface.copy(alpha = .82f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (game.danger) BoardPink.copy(alpha = .7f) else BoardLine.copy(alpha = .7f)),
+        shape = RoundedCornerShape(18.dp),
+        accent = if (game.danger) BoardPink else Palette.line,
     ) {
         Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -263,7 +266,7 @@ private fun TutorialCard(game: UiGame, callbacks: UiCallbacks) {
         1 -> R.string.tutorial_swap
         else -> R.string.tutorial_match
     })
-    Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), color = BoardRaised) {
+    GlassPanel(Modifier.fillMaxWidth(), shape = RoundedCornerShape(14.dp), accent = Palette.violetLight) {
         Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(text, style = Caption.copy(color = BoardStrong))
             Text(stringResource(if (game.tutorialStep == 2) R.string.tutorial_start else R.string.tutorial_skip), color = BoardAccent,
@@ -301,19 +304,11 @@ private fun ShotsCounter(game: UiGame) {
     }
 }
 
-internal fun difficultyColor(difficulty: UiDifficulty) = when (difficulty) {
-    UiDifficulty.EASY -> Color(0xFF9ECE6A)
-    UiDifficulty.MEDIUM -> Color(0xFF7AA2F7)
-    UiDifficulty.HARD -> Color(0xFFF7768E)
-}
+internal fun difficultyColor(difficulty: UiDifficulty) = Palette.difficulty(difficulty)
 
 @Composable
 internal fun DifficultyChip(difficulty: UiDifficulty, modifier: Modifier = Modifier) {
-    val color = difficultyColor(difficulty)
-    Box(modifier.clip(RoundedCornerShape(50)).background(color.copy(alpha = .16f)).border(1.dp, color.copy(alpha = .6f), RoundedCornerShape(50))
-        .padding(horizontal = 8.dp, vertical = 1.dp)) {
-        Text(stringResource(difficulty.label), style = Caption.copy(color = color, fontSize = 12.sp, lineHeight = 15.sp, fontWeight = FontWeight.SemiBold))
-    }
+    GlossyPill(stringResource(difficulty.label), difficultyColor(difficulty), modifier)
 }
 
 @Composable
@@ -330,16 +325,13 @@ internal fun StarMeter(filled: Int, modifier: Modifier = Modifier, size: android
 
 @Composable
 private fun PauseButton(onClick: () -> Unit) {
-    val label = stringResource(R.string.cd_pause)
-    Box(Modifier.size(48.dp).clip(CircleShape).clickable(role = Role.Button, onClick = onClick).semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
-        Box(Modifier.size(36.dp).clip(CircleShape).background(BoardSurface).border(1.dp, BoardLine, CircleShape), contentAlignment = Alignment.Center) {
-            Canvas(Modifier.size(14.dp)) {
-                val w = size.width * .3f
-                drawRoundRect(BoardText, Offset(size.width * .1f, 0f), Size(w, size.height), androidx.compose.ui.geometry.CornerRadius(w / 3))
-                drawRoundRect(BoardText, Offset(size.width * .6f, 0f), Size(w, size.height), androidx.compose.ui.geometry.CornerRadius(w / 3))
-            }
-        }
-    }
+    GlassIconButton(
+        glyph = "❚❚",
+        description = stringResource(R.string.cd_pause),
+        onClick = onClick,
+        accent = Palette.violetLight,
+        diameter = 38.dp,
+    )
 }
 
 internal fun formatPoints(value: Long): String = NumberFormat.getIntegerInstance().format(value)
@@ -401,6 +393,12 @@ private fun GameBoard(game: UiGame, callbacks: UiCallbacks, reducedMotion: Boole
     val swapLabel = stringResource(R.string.swap_bubbles)
     val shootLabel = stringResource(R.string.shoot)
     val labels = BoardLabels(stringResource(R.string.next_bubble_label), stringResource(R.string.unused_shots_float))
+    val aimPhase by rememberInfiniteTransition(label = "aim").animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(durationMillis = 2400, easing = LinearEasing)),
+        label = "chevrons",
+    )
     Canvas(
         modifier
             .semantics {
@@ -466,7 +464,7 @@ private fun GameBoard(game: UiGame, callbacks: UiCallbacks, reducedMotion: Boole
                 }
             },
     ) {
-        drawNightBoard(game, nextEvent, if (activeEvent?.id == nextEvent?.id) progress else 0f, game.preview, game.currentBubble, game.nextBubble, game.leftHanded, symbolsEnabled, reducedMotion, textMeasurer, labels)
+        drawNightBoard(game, nextEvent, if (activeEvent?.id == nextEvent?.id) progress else 0f, game.preview, game.currentBubble, game.nextBubble, game.leftHanded, symbolsEnabled, reducedMotion, textMeasurer, labels, if (reducedMotion) 0f else aimPhase)
     }
 }
 
@@ -492,40 +490,14 @@ private fun DrawScope.drawNightBoard(
     reducedMotion: Boolean,
     textMeasurer: TextMeasurer,
     labels: BoardLabels,
+    phase: Float,
 ) {
     val unitX = size.width / 18f
     val unitY = size.height / 32f
     fun px(point: UiPoint) = Offset(point.x * unitX, point.y * unitY)
     fun center(bubble: UiBubble) = Offset((1f + bubble.column * 2f + if (bubble.row % 2 == 1) 1f else 0f) * unitX, (1f + bubble.row * kotlin.math.sqrt(3f)) * unitY)
 
-    drawRoundRect(BoardBg.copy(alpha = .52f), topLeft = Offset(0f, 0f), size = size, cornerRadius = androidx.compose.ui.geometry.CornerRadius(size.width * .1f))
-    // Thin framed arch. Its curve is decorative; the physical side walls remain straight.
-    drawRoundRect(BoardLine.copy(alpha = .45f), topLeft = Offset(unitX * .08f, unitY * .08f), size = Size(size.width - unitX * .16f, size.height - unitY * .16f), cornerRadius = androidx.compose.ui.geometry.CornerRadius(unitX * 2.1f), style = Stroke(width = .8.dp.toPx()))
-
-    val decorStars = listOf(.12f to .34f, .84f to .42f, .23f to .65f, .78f to .72f, .16f to .81f, .89f to .87f)
-    decorStars.forEachIndexed { index, pair -> drawCircle(BoardPurple.copy(alpha = if (index % 2 == 0) .36f else .22f), if (index % 3 == 0) 1.6.dp.toPx() else 1.dp.toPx(), Offset(size.width * pair.first, size.height * pair.second)) }
-
-    // Dim lunar ridges around the launcher recess.
-    val ridge = Path().apply {
-        moveTo(0f, size.height * .9f); cubicTo(size.width * .13f, size.height * .83f, size.width * .18f, size.height * .88f, size.width * .27f, size.height * .91f)
-        cubicTo(size.width * .43f, size.height * .95f, size.width * .53f, size.height * .88f, size.width * .68f, size.height * .91f)
-        cubicTo(size.width * .83f, size.height * .94f, size.width * .89f, size.height * .83f, size.width, size.height * .9f)
-    }
-    drawPath(ridge, BoardPurple.copy(alpha = .2f), style = Stroke(width = 1.dp.toPx()))
-    val mountains = Path().apply {
-        moveTo(0f, size.height * .91f); lineTo(size.width * .1f, size.height * .83f); lineTo(size.width * .17f, size.height * .91f)
-        lineTo(size.width * .28f, size.height * .86f); lineTo(size.width * .39f, size.height * .93f); lineTo(size.width * .56f, size.height * .88f)
-        lineTo(size.width * .69f, size.height * .94f); lineTo(size.width * .83f, size.height * .84f); lineTo(size.width, size.height * .91f)
-        lineTo(size.width, size.height); lineTo(0f, size.height); close()
-    }
-    drawPath(mountains, Color(0xFF171B2D).copy(alpha = .82f))
-
-    val dangerY = game.dangerLine.coerceIn(1, 31) * unitY
-    val dashes = size.width / (unitX * .8f).coerceAtLeast(1f)
-    repeat(dashes.toInt().coerceIn(1, 50)) { index ->
-        val x = index * unitX * .8f
-        drawLine(if (game.danger) BoardPink.copy(alpha = .8f) else BoardLine.copy(alpha = .4f), Offset(x, dangerY), Offset(x + unitX * .35f, dangerY), if (game.danger) 1.5.dp.toPx() else 1.dp.toPx())
-    }
+    drawBoardShell(unitX, unitY, BoardAccent, game.dangerLine, game.danger, reducedMotion, phase)
 
     val eventBubbles = event?.before ?: game.board
     val affected = event?.affected.orEmpty().toSet()
@@ -543,7 +515,7 @@ private fun DrawScope.drawNightBoard(
         }
         val shouldFade = event != null && event.kind in movingKinds && (bubble in affected || event.bubble == bubble || changedBySnapshot)
         if (!shouldFade) {
-            drawSatinBubble(center(bubble), unitX * .96f, bubble, modelSymbols)
+            drawGlossyBubble(center(bubble), unitX * .96f, bubble, modelSymbols)
         } else if (event != null && event.kind == UiEventKind.DROP) {
             val fromCenter = center(bubble)
             val toCenter = pairedAfter?.let { center(it) }
@@ -551,9 +523,17 @@ private fun DrawScope.drawNightBoard(
                 ?: Offset(fromCenter.x, fromCenter.y + unitY * 5f)
             val t = if (reducedMotion) 0f else progress * progress
             val moved = Offset(fromCenter.x + (toCenter.x - fromCenter.x) * t, fromCenter.y + (toCenter.y - fromCenter.y) * t)
-            drawSatinBubble(moved, unitX * .96f, bubble, modelSymbols, alpha = 1f - progress)
+            drawGlossyBubble(moved, unitX * .96f, bubble, modelSymbols, alpha = 1f - progress, scale = 1f - progress * .35f)
         } else if (progress < 1f) {
-            drawSatinBubble(center(bubble), unitX * .96f * (if (reducedMotion) 1f else 1f - progress * .45f), bubble, modelSymbols, alpha = 1f - progress)
+            drawGlossyBubble(center(bubble), unitX * .96f, bubble, modelSymbols,
+                alpha = 1f - progress, scale = if (reducedMotion) 1f else 1f + progress * .45f)
+        }
+    }
+
+    if (event != null && event.kind == UiEventKind.MATCH && progress > 0f && progress < 1f) {
+        val particles = burstParticles(event.id)
+        event.affected.forEach { cell ->
+            drawPopBurst(particles, center(cell), progress, BoardColors[cell.color] ?: Palette.gold, unitX)
         }
     }
 
@@ -561,44 +541,34 @@ private fun DrawScope.drawNightBoard(
         val pathPoints = event.trajectory.map(::px)
         for (i in 0 until (pathPoints.size - 1).coerceAtLeast(0)) {
             if (!reducedMotion && i.toFloat() / (pathPoints.size - 1).coerceAtLeast(1) <= progress) {
-                drawLine(BoardAccent.copy(alpha = .2f), pathPoints[i], pathPoints[i + 1], 1.2.dp.toPx(), cap = StrokeCap.Round)
+                drawLine(BoardAccent.copy(alpha = .25f), pathPoints[i], pathPoints[i + 1], 3.dp.toPx(), cap = StrokeCap.Round)
             }
         }
         val location = pointOnPolyline(event.trajectory, progress)
-        drawSatinBubble(px(location), unitX * .96f, event.bubble, modelSymbols)
+        drawGlossyBubble(px(location), unitX * .96f, event.bubble, modelSymbols)
     } else if (event == null && preview.points.size > 1 && preview.valid) {
-        val pts = preview.points.map(::px)
-        for (i in 0 until pts.lastIndex) {
-            val alpha = if (i % 2 == 0) .75f else .5f
-            drawLine(BoardAccent.copy(alpha = alpha), pts[i], pts[i + 1], 1.3.dp.toPx(), cap = StrokeCap.Round)
-        }
-        preview.destination?.let { d -> drawCircle(BoardAccent.copy(alpha = .35f), unitX * 1.15f, px(d), style = Stroke(width = 1.dp.toPx())) }
-    } else if (event == null && preview.destination != null && !preview.valid) {
-        drawCircle(BoardMuted.copy(alpha = .48f), unitX * .55f, px(preview.destination), style = Stroke(width = 1.4.dp.toPx()))
-        val c = px(preview.destination)
-        drawLine(BoardMuted.copy(alpha = .65f), Offset(c.x - unitX * .35f, c.y - unitY * .35f), Offset(c.x + unitX * .35f, c.y + unitY * .35f), 1.dp.toPx())
+        drawAimGuide(preview.points.map(::px), true, BoardAccent, phase, preview.destination?.let(::px), unitX)
+    } else if (event == null && preview.destination != null) {
+        drawAimGuide(emptyList(), preview.valid, BoardAccent, phase, px(preview.destination), unitX)
     }
 
     val launcher = Offset(9f * unitX, 29f * unitY)
-    // Orbital launcher halo with a small directional pointer.
-    drawCircle(BoardPurple.copy(alpha = .15f), unitX * 2.35f, launcher)
-    drawCircle(BoardPurple.copy(alpha = .66f), unitX * 1.27f, launcher, style = Stroke(width = 1.dp.toPx()))
-    drawCircle(BoardAccent.copy(alpha = .45f), unitX * 1.06f, launcher, style = Stroke(width = .8.dp.toPx()))
     val aimAngle = preview.angleMilliDegrees / 1000f * PI.toFloat() / 180f
-    val arrowEnd = Offset(launcher.x + sin(aimAngle) * unitX * 1.52f, launcher.y - cos(aimAngle) * unitY * 1.52f)
-    drawLine(BoardAccent.copy(alpha = .9f), launcher, arrowEnd, 1.4.dp.toPx(), cap = StrokeCap.Round)
-    drawCircle(BoardAccent, unitX * .1f, arrowEnd)
-    current?.let { drawSatinBubble(launcher, unitX * .86f, it, modelSymbols) }
+    drawLauncher(launcher, unitX, aimAngle, BoardAccent, if (preview.valid) 1f else .4f)
+    current?.let {
+        drawSeatedRing(launcher, unitX * .9f, BoardColors[it.color] ?: Palette.gold, if (preview.valid) 1f else .35f)
+        drawGlossyBubble(launcher, unitX * .9f, it, modelSymbols)
+    }
 
     val nextX = if (leftHanded) 5f else 13f
     next?.let {
-        drawCircle(BoardPurple.copy(alpha = .45f), unitX * .74f, Offset(nextX * unitX, 29f * unitY), style = Stroke(width = .8.dp.toPx()))
-        drawSatinBubble(Offset(nextX * unitX, 29f * unitY), unitX * .66f, it, modelSymbols)
+        val seat = Offset(nextX * unitX, 29f * unitY)
+        drawNextCapsule(seat, unitX, BoardAccent)
+        drawGlossyBubble(seat, unitX * .62f, it, modelSymbols, shadow = false)
         val label = textMeasurer.measure(labels.next, TextStyle(fontFamily = BoardFont, fontSize = 9.sp, color = BoardMuted, letterSpacing = 1.sp))
         drawText(label, topLeft = Offset(nextX * unitX - label.size.width / 2f, 29f * unitY + unitX * .95f))
     }
 
-    // Floating points: over the removed bubbles, or the board centre for the unused-shot bonus.
     if (event != null && event.points > 0 && progress < 1f) {
         val anchor = if (event.kind == UiEventKind.VICTORY || event.affected.isEmpty()) Offset(size.width / 2f, size.height * .42f)
             else event.affected.map(::center).let { points -> Offset(points.map { it.x }.average().toFloat(), points.map { it.y }.average().toFloat()) }
@@ -609,7 +579,7 @@ private fun DrawScope.drawNightBoard(
             if (event.multiplier > 1) append("  ×").append(event.multiplier)
             if (event.kind == UiEventKind.VICTORY) append("\n").append(labels.unusedShots)
         }
-        val layout = textMeasurer.measure(text, TextStyle(fontFamily = BoardDisplayFont, fontWeight = FontWeight.Bold, fontSize = 20.sp,
+        val layout = textMeasurer.measure(text, TextStyle(fontFamily = BoardDisplayFont, fontWeight = FontWeight.Bold, fontSize = 21.sp,
             color = (if (event.multiplier > 1) BoardOrange else BoardStrong).copy(alpha = alpha), textAlign = TextAlign.Center),
             constraints = Constraints(maxWidth = (size.width - 8f).toInt().coerceAtLeast(0), maxHeight = (size.height - 8f).toInt().coerceAtLeast(0)))
         val x = floatingLabelPosition(anchor.x - layout.size.width / 2f, size.width, layout.size.width.toFloat())
@@ -634,82 +604,12 @@ private fun pointOnPolyline(points: List<UiPoint>, fraction: Float): UiPoint {
     return points.last()
 }
 
+/**
+ * Draws one piece on the board. Kept as a thin alias so every existing call site (board, tips,
+ * next-bubble capsule) picks up the glossy 3D renderer without changing gameplay code.
+ */
 internal fun DrawScope.drawSatinBubble(center: Offset, radius: Float, bubble: UiBubble, symbols: Boolean, alpha: Float = 1f) {
-    if (bubble.kind == UiBubbleKind.ROCK) {
-        val shape = Path().apply {
-            moveTo(center.x - radius * .68f, center.y - radius * .56f); lineTo(center.x - radius * .12f, center.y - radius * .96f)
-            lineTo(center.x + radius * .63f, center.y - radius * .62f); lineTo(center.x + radius * .91f, center.y + radius * .12f)
-            lineTo(center.x + radius * .42f, center.y + radius * .85f); lineTo(center.x - radius * .52f, center.y + radius * .72f)
-            lineTo(center.x - radius * .91f, center.y + radius * .08f); close()
-        }
-        drawCircle(Color(0xFF666C82).copy(alpha = alpha), radius, center)
-        drawPath(shape, Color(0xFF9096A8).copy(alpha = alpha))
-        drawPath(shape, Color(0xFFCBD0DC).copy(alpha = alpha * .55f), style = Stroke(width = .8.dp.toPx()))
-        drawLine(Color(0xFF5E6378).copy(alpha = alpha), Offset(center.x - radius * .12f, center.y - radius * .96f), Offset(center.x + radius * .03f, center.y + radius * .12f), .8.dp.toPx())
-        drawLine(Color(0xFF5E6378).copy(alpha = alpha), Offset(center.x - radius * .91f, center.y + radius * .08f), Offset(center.x + radius * .03f, center.y + radius * .12f), .8.dp.toPx())
-        return
-    }
-    val fill = if (bubble.kind == UiBubbleKind.STAR) Color(0xFF312B50) else BoardColors[bubble.color] ?: BoardAccent
-    drawCircle(Color.Black.copy(alpha = .28f * alpha), radius * 1.04f, Offset(center.x, center.y + radius * .08f))
-    drawCircle(Brush.radialGradient(listOf(lerp(fill, Color.White, .25f).copy(alpha = alpha), fill.copy(alpha = alpha), lerp(fill, Color.Black, .4f).copy(alpha = alpha)), center = Offset(center.x - radius * .2f, center.y - radius * .3f), radius = radius * 1.45f), radius, center)
-    drawCircle(fill.copy(alpha = alpha * .75f), radius, center, style = Stroke(width = .8.dp.toPx()))
-    // The highlight stays small so the fixed symbol remains the visual anchor.
-    drawOval(Color.White.copy(alpha = .24f * alpha), topLeft = Offset(center.x - radius * .58f, center.y - radius * .69f), size = Size(radius * .5f, radius * .17f))
-    if (bubble.kind == UiBubbleKind.STAR) {
-        drawCircle(BoardPurple.copy(alpha = alpha), radius * .92f, center, style = Stroke(width = 1.5.dp.toPx()))
-        drawCircle(BoardText.copy(alpha = alpha), radius * .68f, center, style = Stroke(width = 1.dp.toPx()))
-        drawStar(center, radius * .39f, BoardOrange.copy(alpha = alpha), 5)
-    } else if (symbols) {
-        drawSymbol(center, radius * .38f, bubble.color ?: UiBubbleColor.BLUE, alpha)
-    }
-}
-
-private fun DrawScope.drawSymbol(center: Offset, r: Float, color: UiBubbleColor, alpha: Float) {
-    val dark = Color(0xFF16161E).copy(alpha = alpha * .88f)
-    when (color) {
-        UiBubbleColor.BLUE -> drawCircle(dark, r * .72f, center)
-        UiBubbleColor.PURPLE -> drawStar(center, r, dark, 5)
-        UiBubbleColor.GREEN -> {
-            val path = Path().apply { moveTo(center.x, center.y - r); lineTo(center.x + r * .88f, center.y + r * .72f); lineTo(center.x - r * .88f, center.y + r * .72f); close() }
-            drawPath(path, dark)
-        }
-        UiBubbleColor.ORANGE -> drawRect(dark, Offset(center.x - r * .68f, center.y - r * .68f), Size(r * 1.36f, r * 1.36f))
-        UiBubbleColor.PINK -> {
-            val path = Path().apply { moveTo(center.x, center.y - r); lineTo(center.x + r, center.y); lineTo(center.x, center.y + r); lineTo(center.x - r, center.y); close() }
-            drawPath(path, dark)
-        }
-        UiBubbleColor.CYAN -> {
-            drawRoundRect(dark, Offset(center.x - r * .28f, center.y - r), Size(r * .56f, r * 2f), androidx.compose.ui.geometry.CornerRadius(r * .2f))
-            drawRoundRect(dark, Offset(center.x - r, center.y - r * .28f), Size(r * 2f, r * .56f), androidx.compose.ui.geometry.CornerRadius(r * .2f))
-        }
-    }
-}
-
-internal fun DrawScope.drawStarOutline(center: Offset, radius: Float, color: Color) {
-    val path = Path()
-    for (i in 0 until 10) {
-        val r = if (i % 2 == 0) radius else radius * .46f
-        val angle = -PI / 2 + i * PI / 5
-        val x = center.x + cos(angle).toFloat() * r
-        val y = center.y + sin(angle).toFloat() * r
-        if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
-    }
-    path.close()
-    drawPath(path, color, style = Stroke(width = 1.dp.toPx()))
-}
-
-internal fun DrawScope.drawStar(center: Offset, radius: Float, color: Color, points: Int) {
-    val path = Path()
-    val inner = radius * .46f
-    for (i in 0 until points * 2) {
-        val r = if (i % 2 == 0) radius else inner
-        val angle = -PI / 2 + i * PI / points
-        val x = center.x + cos(angle).toFloat() * r
-        val y = center.y + sin(angle).toFloat() * r
-        if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
-    }
-    path.close()
-    drawPath(path, color)
+    drawGlossyBubble(center, radius, bubble, symbols, alpha)
 }
 
 @Composable
@@ -717,16 +617,14 @@ private fun SwapAndNext(game: UiGame, callbacks: UiCallbacks, compact: Boolean =
     Row(Modifier.fillMaxWidth().heightIn(min = 58.dp).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
         val swapLabel = stringResource(if (compact) R.string.swap_short else R.string.swap_bubbles)
         val swapDescription = stringResource(R.string.swap_bubbles)
-        Surface(
-            Modifier.heightIn(min = 48.dp).clickable(enabled = game.inputEnabled, role = Role.Button, onClick = callbacks::onSwap)
-                .semantics { contentDescription = swapDescription },
-            shape = RoundedCornerShape(15.dp), color = BoardSurface, border = androidx.compose.foundation.BorderStroke(1.dp, BoardLine),
-        ) {
-            Row(Modifier.padding(horizontal = 15.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                SwapGlyph(Modifier.size(20.dp))
-                Text(swapLabel, style = TextStyle(fontFamily = BoardFont, color = BoardText, fontSize = 15.sp, fontWeight = FontWeight.Medium))
-            }
-        }
+        GlassButton(
+            label = swapLabel,
+            onClick = callbacks::onSwap,
+            modifier = Modifier.heightIn(min = 52.dp).semantics { contentDescription = swapDescription },
+            enabled = game.inputEnabled,
+            accent = Palette.cyan,
+            glyph = "⇄",
+        )
     }
 }
 
@@ -816,10 +714,11 @@ private fun AimControl(direction: Int, game: UiGame, callbacks: UiCallbacks, mod
 
 @Composable
 private fun ControlButton(label: String, description: String, modifier: Modifier, primary: Boolean = false, enabled: Boolean = true, onClick: () -> Unit) {
-    Surface(modifier.heightIn(min = 48.dp).clickable(enabled = enabled, role = Role.Button, onClick = onClick).semantics { contentDescription = description }, shape = RoundedCornerShape(13.dp), color = if (primary) BoardAccent else BoardSurface, border = if (primary) null else androidx.compose.foundation.BorderStroke(1.dp, BoardLine)) {
-        Box(Modifier.padding(horizontal = 6.dp), contentAlignment = Alignment.Center) {
-            Text(label, style = TextStyle(color = if (primary) BoardOnAccent else BoardText, fontSize = 14.sp, fontWeight = FontWeight.SemiBold), textAlign = TextAlign.Center)
-        }
+    val styled = modifier.heightIn(min = 52.dp).semantics { contentDescription = description }
+    if (primary) {
+        GlossyButton(label, onClick, styled, accent = Palette.violet, enabled = enabled, compact = true, trailingGlyph = null)
+    } else {
+        GlassButton(label, onClick, styled, enabled = enabled, accent = Palette.cyan)
     }
 }
 
@@ -832,8 +731,10 @@ private fun GameIconButton(symbol: String, description: String, onClick: () -> U
 
 @Composable
 private fun GameAction(label: String, onClick: () -> Unit, primary: Boolean, enabled: Boolean = true) {
-    Surface(Modifier.fillMaxWidth().heightIn(min = 56.dp).clickable(enabled = enabled, role = Role.Button, onClick = onClick), shape = RoundedCornerShape(15.dp), color = if (primary) BoardAccent else BoardSurface) {
-        Box(contentAlignment = Alignment.Center) { Text(label, color = if (primary) BoardOnAccent else BoardText, fontSize = 16.sp, fontWeight = FontWeight.SemiBold) }
+    if (primary) {
+        GlossyButton(label, onClick, Modifier.fillMaxWidth(), accent = Palette.violet, enabled = enabled)
+    } else {
+        GlassButton(label, onClick, Modifier.fillMaxWidth(), enabled = enabled, accent = Palette.violetLight)
     }
 }
 
@@ -851,8 +752,8 @@ private fun GameOverlay(
     zenMode: Boolean = false,
     tips: List<UiTip> = emptyList(),
 ) {
-    Box(Modifier.fillMaxSize().background(BoardBg.copy(alpha = .76f)).clickable(enabled = false) {}, contentAlignment = Alignment.Center) {
-        Surface(Modifier.fillMaxWidth().padding(horizontal = 22.dp).widthIn(max = 440.dp), shape = RoundedCornerShape(28.dp), color = BoardSurface, border = androidx.compose.foundation.BorderStroke(1.dp, BoardLine)) {
+    Box(Modifier.fillMaxSize().background(Palette.void.copy(alpha = .8f)).clickable(enabled = false) {}, contentAlignment = Alignment.Center) {
+        GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 22.dp).widthIn(max = 440.dp), shape = RoundedCornerShape(28.dp), accent = Palette.violetLight, glow = true) {
             Column(Modifier.verticalScroll(rememberScrollState()).padding(22.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("☾", color = BoardPurple, fontSize = 31.sp)
                 Text(title, style = TextStyle(fontFamily = BoardDisplayFont, fontWeight = FontWeight.Bold, color = BoardStrong, fontSize = 26.sp))
@@ -876,8 +777,8 @@ private fun GameOverlay(
 @Composable
 private fun ResultOverlay(model: UiModel, callbacks: UiCallbacks, won: Boolean) {
     val result = model.result
-    Box(Modifier.fillMaxSize().background(BoardBg.copy(alpha = .8f)).clickable(enabled = false) {}, contentAlignment = Alignment.Center) {
-        Surface(Modifier.fillMaxWidth().padding(horizontal = 18.dp).widthIn(max = 440.dp), shape = RoundedCornerShape(28.dp), color = BoardSurface, border = androidx.compose.foundation.BorderStroke(1.dp, if (won) BoardPurple.copy(alpha = .8f) else BoardLine)) {
+    Box(Modifier.fillMaxSize().background(Palette.void.copy(alpha = .85f)).clickable(enabled = false) {}, contentAlignment = Alignment.Center) {
+        GlassPanel(Modifier.fillMaxWidth().padding(horizontal = 18.dp).widthIn(max = 440.dp), shape = RoundedCornerShape(28.dp), accent = if (won) Palette.gold else Palette.violetLight, glow = won) {
             Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 22.dp, vertical = 20.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 if (won && result?.maxShots != null && result.waveScore == null) {
                     ResultStars(result.stars, model.reducedMotion)
@@ -923,10 +824,10 @@ private fun ResultStars(stars: Int, reducedMotion: Boolean) {
         modifier = Modifier.semantics { contentDescription = description }) {
         repeat(3) { index ->
             val big = index == 1
-            Canvas(Modifier.size(if (big) 46.dp else 36.dp)) {
+            Canvas(Modifier.size(if (big) 54.dp else 42.dp)) {
                 val r = size.minDimension / 2f
-                if (index < stars) drawStar(center, r * scales[index].value.coerceAtLeast(.01f), BoardOrange, 5)
-                else drawStarOutline(center, r * .92f, BoardMuted.copy(alpha = .6f))
+                if (index < stars) drawGlowingStar(center, r * .8f * scales[index].value.coerceAtLeast(.01f), Palette.gold)
+                else drawStarOutline(center, r * .8f, BoardMuted.copy(alpha = .55f))
             }
         }
     }
