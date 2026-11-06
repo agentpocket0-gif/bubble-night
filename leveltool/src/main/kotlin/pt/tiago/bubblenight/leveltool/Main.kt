@@ -35,10 +35,11 @@ private class LevelToolCli {
                 ContentCommands.report(options.path("catalog", "content/catalog.json"), options.optionalPath("output"))
             }
             "export-assets" -> {
-                options.allow("catalog", "output")
+                options.allow("catalog", "output", "skip-verify")
                 ContentCommands.exportAssets(
                     options.path("catalog", "content/catalog.json"),
                     options.path("output", "app/build/generated/bubbleAssets"),
+                    verify = !options.flag("skip-verify"),
                 )
             }
             "solve" -> {

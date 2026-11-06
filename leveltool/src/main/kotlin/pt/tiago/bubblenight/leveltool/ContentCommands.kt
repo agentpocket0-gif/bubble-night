@@ -587,14 +587,15 @@ internal object ContentCommands {
         return 0
     }
 
-    fun exportAssets(catalogPath: Path, output: Path): Int {
+    fun exportAssets(catalogPath: Path, output: Path, verify: Boolean = true): Int {
         val catalogFile = catalogPath.toAbsolutePath().normalize()
         val catalog = read<ContentCatalog>(catalogFile)
         val projectRoot = contentRoot(catalogFile)
         val problems = validateCatalog(catalog, catalogFile, projectRoot)
         if (problems.isNotEmpty()) throw CliFailure(problems.joinToString("\n", prefix = "Export refused; invalid catalog:\n  - "))
 
-        verifyCertificates(catalogFile, catalogFile.parent.resolve("certificates"))
+        // --skip-verify is for machines that already replayed the certificates in this session.
+        if (verify) verifyCertificates(catalogFile, catalogFile.parent.resolve("certificates"))
         val destination = output.toAbsolutePath().normalize()
         val assetEntries = mutableListOf<pt.tiago.bubblenight.core.model.AssetCatalogLevel>()
         val generated = linkedMapOf<Path, ByteArray>()
