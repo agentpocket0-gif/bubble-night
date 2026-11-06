@@ -21,7 +21,7 @@ This is a feature and visual reference review. It does not copy the reference ga
 - Each base level currently has Easy, Medium and Hard variants, for 1,800 variant boards and associated solution certificates.
 - The game already has local sound cues for launch, bounce, match, drop, victory and defeat, played with Android SoundPool. Vibration is optional.
 - The game board already draws glossy-looking spheres with radial gradients, highlights, rims and shadows. It uses Compose Canvas, which gives a 2.5D visual style rather than true real-time 3D models.
-- The current game data model supports colour bubbles, rocks and stars. It does not yet define bomb or laser power-up mechanics.
+- The current game data model supports colour bubbles, rocks and stars. A separate special-booster system has not yet been added.
 
 ## Changes committed on this branch
 
@@ -52,8 +52,8 @@ This is a feature and visual reference review. It does not copy the reference ga
 
 These items are intentionally not described as complete:
 
-- Real bomb and laser power-ups, including inventory/charges, activation rules, engine events, animations, scoring and tests.
-- Dedicated bomb/laser sound cues and richer particle/burst effects.
+- Additional non-combat puzzle assists, with tested game rules and clear visual feedback.
+- Original sound cues and richer particle effects for any new puzzle assists.
 - A full density and layout review of Levels 2–600. Only Level 1's board layout has been changed in this pass; the 600-level catalogue itself remains intact.
 - A safe migration that combines historical Easy, Medium and Hard progress into one Standard campaign without losing stars, scores, achievements or saved sessions.
 - True 3D assets/models. The current app is Kotlin/Compose and has no Godot 3D renderer. The current visual pass uses native Canvas shading and lighting effects.
@@ -75,8 +75,8 @@ Only after that run succeeds should the generated APK artifacts be treated as bu
 
 1. Design the Standard campaign migration and add tests before changing old save data.
 2. Expand and review board density across the remaining levels, then regenerate and replay certificates.
-3. Add bomb and laser as real engine-supported pieces/power-ups, not decorative controls.
-4. Add original sound cues and effects for each new action.
+3. Design non-combat puzzle assists such as a rainbow bubble, colour clear or sparkle pop, backed by engine tests.
+4. Add original sound cues and effects for each new assist.
 5. Test the resulting APK on a physical Android device and fix any layout or performance issues.
 
 ## Current status
