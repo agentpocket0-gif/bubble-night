@@ -230,12 +230,35 @@ internal fun DrawScope.drawAimGuide(
         return
     }
     val tint = if (valid) accent else Palette.muted
+    // Dotted guide, like the arcade originals: round beads that travel toward the landing spot.
+    var total = 0f
     for (i in 0 until points.lastIndex) {
-        drawLine(tint.copy(alpha = .16f), points[i], points[i + 1], unitX * .5f, cap = StrokeCap.Round)
+        val dx = points[i + 1].x - points[i].x
+        val dy = points[i + 1].y - points[i].y
+        total += sqrt(dx * dx + dy * dy)
     }
-    for (i in 0 until points.lastIndex) {
-        val t = i.toFloat() / points.lastIndex.coerceAtLeast(1)
-        drawLine(tint.copy(alpha = (.95f - t * .55f) * (if (valid) 1f else .6f)), points[i], points[i + 1], 2.dp.toPx(), cap = StrokeCap.Round)
+    val spacing = (unitX * .55f).coerceAtLeast(6f)
+    val beadRadius = (unitX * .13f).coerceAtLeast(1.6f)
+    var travelled = (if (valid) (phase * spacing) else 0f)
+    var segment = 0
+    var segmentStart = 0f
+    while (travelled < total && segment < points.lastIndex) {
+        val dx = points[segment + 1].x - points[segment].x
+        val dy = points[segment + 1].y - points[segment].y
+        val length = sqrt(dx * dx + dy * dy)
+        if (length <= 0f) { segment++; continue }
+        if (travelled <= segmentStart + length) {
+            val t = ((travelled - segmentStart) / length).coerceIn(0f, 1f)
+            val x = points[segment].x + dx * t
+            val y = points[segment].y + dy * t
+            val fade = (1f - (travelled / total) * .55f) * (if (valid) 1f else .5f)
+            drawCircle(tint.copy(alpha = .16f * fade), beadRadius * 1.9f, Offset(x, y))
+            drawCircle(tint.copy(alpha = .9f * fade), beadRadius, Offset(x, y))
+            travelled += spacing
+        } else {
+            segmentStart += length
+            segment++
+        }
     }
     if (valid) {
         val count = 5
