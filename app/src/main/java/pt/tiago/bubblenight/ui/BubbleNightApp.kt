@@ -34,7 +34,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -74,20 +74,21 @@ import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
 private object NightPalette {
-    val background = Color(0xFF080B18)
-    val surface = Color(0xFF121A30)
-    val raised = Color(0xFF1B2742)
-    val text = Color(0xFFC9D8F2)
-    val strong = Color(0xFFF5F7FF)
-    val muted = Color(0xFF8191B5)
-    val accent = Color(0xFF62D8F5)
-    val purple = Color(0xFFB18CFF)
-    val green = Color(0xFF76E0B5)
-    val orange = Color(0xFFFFC46B)
-    val pink = Color(0xFFFF79B7)
-    val cyan = Color(0xFF5CE1E6)
-    val line = Color(0xFF344365)
-    val onAccent = Color(0xFF071321)
+    // Bright sky palette: dark text stays readable on the light, glossy surfaces.
+    val background = Color(0xFFE8F6FF)
+    val surface = Color(0xFFF7FCFF)
+    val raised = Color(0xFFE0F1FF)
+    val text = Color(0xFF294A65)
+    val strong = Color(0xFF16344F)
+    val muted = Color(0xFF607D96)
+    val accent = Color(0xFF1679D3)
+    val purple = Color(0xFF8549D9)
+    val green = Color(0xFF168D61)
+    val orange = Color(0xFFEA861E)
+    val pink = Color(0xFFD63F8C)
+    val cyan = Color(0xFF0E9DB4)
+    val line = Color(0xFF9AC3DE)
+    val onAccent = Color(0xFFFFFFFF)
 }
 
 private val FigTree = FontFamily(Font(R.font.figtree))
@@ -101,7 +102,7 @@ fun BubbleNightApp(
     modifier: Modifier = Modifier,
 ) {
     MaterialTheme(
-        colorScheme = darkColorScheme(primary = NightPalette.accent, onPrimary = NightPalette.onAccent,
+        colorScheme = lightColorScheme(primary = NightPalette.accent, onPrimary = NightPalette.onAccent,
             background = NightPalette.background, onBackground = NightPalette.text, surface = NightPalette.surface,
             onSurface = NightPalette.text, secondary = NightPalette.purple, error = NightPalette.pink),
         typography = Typography(bodyLarge = BodyStyle, bodyMedium = BodyStyle, bodySmall = LabelStyle,
@@ -165,7 +166,7 @@ private fun NightBackdrop(modifier: Modifier = Modifier, orbitNumber: Int = 1) {
         val h = size.height
         drawRect(
             androidx.compose.ui.graphics.Brush.verticalGradient(
-                listOf(Color(0xFF070A16), Color(0xFF111832), Color(0xFF090D1D)),
+                listOf(Color(0xFFEAF7FF), Color(0xFFBCE5F8), Color(0xFFF0FAFF)),
                 startY = 0f,
                 endY = h,
             ),
@@ -173,7 +174,7 @@ private fun NightBackdrop(modifier: Modifier = Modifier, orbitNumber: Int = 1) {
         )
         drawCircle(
             androidx.compose.ui.graphics.Brush.radialGradient(
-                listOf(Color(0x443E77C9), Color(0x223D3B83), Color.Transparent),
+                listOf(Color(0x6683C9EE), Color(0x33A4BCE9), Color.Transparent),
                 center = Offset(w * .14f, h * .22f),
                 radius = w * .82f,
             ),
@@ -182,7 +183,7 @@ private fun NightBackdrop(modifier: Modifier = Modifier, orbitNumber: Int = 1) {
         )
         drawCircle(
             androidx.compose.ui.graphics.Brush.radialGradient(
-                listOf(Color(0x334B2D83), Color.Transparent),
+                listOf(Color(0x337AA7DF), Color.Transparent),
                 center = Offset(w * .92f, h * .58f),
                 radius = w * .72f,
             ),
@@ -226,7 +227,7 @@ private fun StartPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier
         ) {
             Column(
                 Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(
-                    Color(0xCC1B2C4D), Color(0xBB121B35), Color(0xBB282044),
+                    Color(0xF4FFFFFF), Color(0xEEF4FBFF), Color(0xEEF0F4FF),
                 ))).padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -283,7 +284,7 @@ private fun MiniPlanet(modifier: Modifier = Modifier) {
         drawOval(NightPalette.purple.copy(alpha = .6f), topLeft = Offset(size.width * .05f, size.height * .37f), size = Size(size.width * .9f, size.height * .3f), style = Stroke(width = 1.1.dp.toPx()))
         drawCircle(
             androidx.compose.ui.graphics.Brush.radialGradient(
-                listOf(Color(0xFF7ADDF4), Color(0xFF344E8D), Color(0xFF171C3A)),
+                listOf(Color(0xFF7ADDF4), Color(0xFFB0D8EF), Color(0xFFE1F3FF)),
                 center = Offset(center.x - size.minDimension * .1f, center.y - size.minDimension * .12f),
                 radius = size.minDimension * .43f,
             ),
@@ -352,7 +353,7 @@ private fun MenuRow(title: String, subtitle: String, glyph: String, onClick: () 
     ) {
         Row(
             Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(
-                Color(0xCC1A2948), Color(0xAA141D37), Color(0xAA241C43),
+                Color(0xF2FFFFFF), Color(0xEAF0F8FF), Color(0xE9F2ECFF),
             ))).padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -432,8 +433,7 @@ private fun MapPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier) 
         })
         LazyColumn(state = listState, modifier = Modifier.weight(1f).fillMaxWidth(),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp)) {
-            item { DifficultyPicker(model.difficulty, callbacks::onDifficultyChanged) }
-            item { Text(stringResource(R.string.progress_completed_of, orbit?.completed ?: 0, orbit?.total ?: 0), style = LabelStyle, modifier = Modifier.padding(8.dp)) }
+                        item { Text(stringResource(R.string.progress_completed_of, orbit?.completed ?: 0, orbit?.total ?: 0), style = LabelStyle, modifier = Modifier.padding(8.dp)) }
             item { SettingRow(stringResource(R.string.map_unfinished_stars), unfinishedStars) { unfinishedStars = it } }
             if (orbit != null && orbit.completed == orbit.total) item {
                 Text(stringResource(R.string.map_orbit_complete, orbit.nodes.sumOf { it.stars }, orbit.total * 3), style = LabelStyle, modifier = Modifier.padding(8.dp))
@@ -538,12 +538,7 @@ private fun PreparationPage(model: UiModel, callbacks: UiCallbacks, modifier: Mo
                     }
                     Text("✦", color = NightPalette.orange, fontSize = 27.sp)
                 }
-                val difficulty = prep?.difficulty ?: model.difficulty
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(stringResource(R.string.prep_difficulty), style = LabelStyle)
-                        DifficultyChip(difficulty)
-                    }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
                     Column(horizontalAlignment = Alignment.End) {
                         Text("${prep?.shots ?: "—"}", style = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.Bold, color = NightPalette.strong, fontSize = 26.sp, lineHeight = 28.sp))
                         Text(stringResource(if (prep?.shots == 1) R.string.shot_unit_one else R.string.shot_unit_other), style = LabelStyle)
@@ -556,7 +551,6 @@ private fun PreparationPage(model: UiModel, callbacks: UiCallbacks, modifier: Mo
                         StarGoal(1, stringResource(R.string.prep_star_finish))
                     }
                 }
-                Text(stringResource(R.string.prep_aim, stringResource(difficulty.aimGuide).lowercase(), stringResource(difficulty.scoreFactor)), style = LabelStyle)
                 if ((prep?.bestStars ?: 0) > 0 || (prep?.bestScore ?: 0L) > 0L) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(stringResource(R.string.prep_your_best), style = LabelStyle)
@@ -596,14 +590,13 @@ private fun FreeModePage(model: UiModel, callbacks: UiCallbacks, modifier: Modif
     Column(modifier.padding(horizontal = 20.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         PageHeader(stringResource(R.string.menu_free), callbacks::onBack)
         Text(stringResource(R.string.free_intro), style = BodyStyle)
-        DifficultyPicker(model.difficulty, callbacks::onDifficultyChanged)
         if (model.developmentCatalog) {
             Text(stringResource(R.string.free_dev_catalog), style = LabelStyle, color = NightPalette.purple)
         }
         ModeCard(
             title = stringResource(R.string.mode_endless),
             description = stringResource(R.string.mode_endless_desc),
-            detail = stringResource(R.string.mode_endless_record, stringResource(model.difficulty.label),
+            detail = stringResource(R.string.mode_endless_standard_record,
                 formatPoints(model.freeModeBestByDifficulty[model.difficulty] ?: model.freeModeBest)),
             glyph = "∞",
             onClick = { callbacks.onStartFreeMode(UiFreeMode.INFINITE) },
@@ -629,7 +622,7 @@ private fun ModeCard(title: String, description: String, detail: String, glyph: 
     ) {
         Row(
             Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(
-                Color(0xCC192846), Color(0xAA121A31), Color(0xAA242044),
+                Color(0xF2FFFFFF), Color(0xEAF0F8FF), Color(0xEAF2FAFF),
             ))).padding(18.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -655,7 +648,6 @@ private fun DailyPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier
         PageHeader(stringResource(R.string.menu_daily), callbacks::onBack)
         Text(date, style = TitleStyle.copy(color = NightPalette.purple))
         Text(stringResource(R.string.daily_intro), style = BodyStyle)
-        DifficultyPicker(model.difficulty, callbacks::onDifficultyChanged)
         Surface(shape = RoundedCornerShape(20.dp), color = NightPalette.surface) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(stringResource(R.string.daily_today, model.dailyLevelNumber), style = CardTitleStyle)
@@ -675,8 +667,7 @@ private fun ZenSelectionPage(model: UiModel, callbacks: UiCallbacks, modifier: M
     val levels = model.zenLevels.filter { !favoritesOnly || it.favorite }
     LazyColumn(modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item { PageHeader(stringResource(R.string.zen_title), callbacks::onBack) }
-        item { DifficultyPicker(model.difficulty, callbacks::onDifficultyChanged) }
-        item { Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                item { Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             SmallAction("‹", stringResource(R.string.cd_previous_orbit)) { callbacks.onOrbitChanged(-1) }
             Text(model.orbit?.name.orEmpty(), style = CardTitleStyle, modifier = Modifier.weight(1f))
             SmallAction("›", stringResource(R.string.cd_next_orbit)) { callbacks.onOrbitChanged(1) }
@@ -768,7 +759,7 @@ private fun settingLabel(setting: UiSetting): Int = when (setting) {
 private fun SettingRow(label: String, enabled: Boolean, onChange: (Boolean) -> Unit) {
     Row(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
-            .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFF192846), NightPalette.surface, Color(0xFF211D3D))))
+            .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFFE4F3FF), NightPalette.surface, Color(0xFFD5ECFC))))
             .border(1.dp, NightPalette.line.copy(alpha = .75f), RoundedCornerShape(16.dp))
             .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -780,12 +771,11 @@ private fun SettingRow(label: String, enabled: Boolean, onChange: (Boolean) -> U
 
 @Composable
 private fun StatisticsPage(model: UiModel, callbacks: UiCallbacks, modifier: Modifier) {
-    var selected by remember { mutableStateOf(model.difficulty) }
+    val selected = model.difficulty
     val stats = model.statisticsByDifficulty[selected] ?: model.statistics
     Column(modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
         PageHeader(stringResource(R.string.menu_statistics), callbacks::onBack)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(top = 8.dp, bottom = 12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            DifficultyPicker(selected, { selected = it }, showSummary = false)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 StatTile(stringResource(R.string.stats_levels), "${stats.levelsCompleted}" + if (stats.totalLevels > 0) " / ${stats.totalLevels}" else "", Modifier.weight(1f))
                 StatTile(stringResource(R.string.stats_stars), "${stats.starsEarned}" + if (stats.totalLevels > 0) " / ${stats.totalLevels * 3}" else "", Modifier.weight(1f))
@@ -833,7 +823,7 @@ private fun AchievementRow(achievement: UiAchievement) {
 private fun StatTile(title: String, value: String, modifier: Modifier = Modifier) {
     Surface(modifier, shape = RoundedCornerShape(18.dp), color = NightPalette.surface, border = androidx.compose.foundation.BorderStroke(1.dp, NightPalette.line)) {
         Column(
-            Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFF1B2A49), NightPalette.surface, Color(0xFF211D3D))))
+            Modifier.background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFFD5ECFC), NightPalette.surface, Color(0xFFD5ECFC))))
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
@@ -889,7 +879,7 @@ private fun LoadingOverlay(message: String) {
             Column(
                 Modifier.background(
                     androidx.compose.ui.graphics.Brush.linearGradient(
-                        listOf(Color(0xFF202B4B), Color(0xFF121B35), Color(0xFF241E43)),
+                        listOf(Color(0xFFD9F0FF), Color(0xFFF3FAFF), Color(0xFFEDE8FF)),
                     ),
                 ).padding(horizontal = 24.dp, vertical = 26.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
