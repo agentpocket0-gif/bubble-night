@@ -61,6 +61,7 @@ jobs:
           api-level: 33
           arch: x86_64
           target: google_apis
+          profile: pixel_5
           disable-animations: true
           emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -camera-back none
           script: |
@@ -68,34 +69,42 @@ jobs:
             mkdir -p shots
             adb wait-for-device
             adb shell 'while [ -z "$(getprop sys.boot_completed)" ]; do sleep 2; done'
+            SIZE=$(adb shell wm size | tr -d '\r' | awk '{print $3}')
+            W=${SIZE%x*}
+            H=${SIZE#*x}
+            echo "screen $W x $H"
             adb install -r apk/app-debug.apk
             adb shell am start -n pt.tiago.bubblenight/.MainActivity
             sleep 8
             adb exec-out screencap -p > shots/01-home.png
-            # hero campaign card -> orbit map
-            adb shell input tap 540 820
-            sleep 4
+            # primary button on the home screen (about 67% down)
+            adb shell input tap $((W/2)) $((H*67/100))
+            sleep 5
             adb exec-out screencap -p > shots/02-map.png
-            # first level node
-            adb shell input tap 240 1150
-            sleep 4
-            adb exec-out screencap -p > shots/03-after-node.png
-            # start / play button near the bottom
-            adb shell input tap 540 1980
+            # level node on the map (upper third, left column)
+            adb shell input tap $((W*25/100)) $((H*45/100))
+            sleep 5
+            adb exec-out screencap -p > shots/03-node.png
+            # bottom primary button on the map/preparation screen
+            adb shell input tap $((W/2)) $((H*93/100))
             sleep 6
             adb exec-out screencap -p > shots/04-gameplay.png
-            # aim upward and shoot
-            adb shell input swipe 540 1500 540 900 300
-            sleep 3
-            adb exec-out screencap -p > shots/05-after-shot.png
+            adb shell input tap $((W/2)) $((H*93/100))
+            sleep 6
+            adb exec-out screencap -p > shots/05-gameplay2.png
+            # aim: swipe up the board to shoot
+            adb shell input swipe $((W/2)) $((H*70/100)) $((W/2)) $((H*35/100)) 400
+            sleep 4
+            adb exec-out screencap -p > shots/06-after-shot.png
             adb shell screenrecord --time-limit 10 --bit-rate 2000000 /sdcard/game.mp4 &
             sleep 4
-            adb shell input swipe 540 1500 700 900 300
-            sleep 3
-            adb shell input swipe 540 1500 380 900 300
-            sleep 5
+            adb shell input swipe $((W/2)) $((H*70/100)) $((W*70/100)) $((H*35/100)) 400
+            sleep 4
+            adb shell input swipe $((W/2)) $((H*70/100)) $((W*30/100)) $((H*35/100)) 400
+            sleep 4
             adb pull /sdcard/game.mp4 shots/game.mp4 || true
-            adb logcat -d -t 200 > shots/logcat.txt || true
+            adb shell dumpsys activity activities | grep -E "mResumedActivity|topResumedActivity" > shots/activity.txt || true
+            adb logcat -d -t 300 > shots/logcat.txt || true
             ls -la shots
       - uses: actions/upload-artifact@v4
         if: always()
